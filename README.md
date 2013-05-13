@@ -24,19 +24,9 @@
 <dependency>
     <groupId>ru.yandex.qatools.properties</groupId>
     <artifactId>properties-loader</artifactId>
-    <version>1.2-SNAPSHOT</version>
-</dependency>
-```
-
-Разработческая версия:
-```xml
-<dependency>
-    <groupId>ru.yandex.qatools.properties</groupId>
-    <artifactId>properties-loader</artifactId>
     <version>1.3-SNAPSHOT</version>
 </dependency>
 ```
-> Во время разработки API может изменяться, используйте разработческую версию на свой страх и риск
 
 ## Getting Started
 
