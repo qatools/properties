@@ -44,9 +44,9 @@
 
     <scm>
         <url>https://github.com/yandex-qatools/properties</url>
-        <connection>scm:git:https://github.com/yandex-qatools/properties.git</connection>
+        <connection>scm:git:git@github.com:yandex-qatools/properties.git</connection>
+        <developerConnection>scm:git:git@github.com:yandex-qatools/proeprties.git</developerConnection>
     </scm>
-
     <developers>
         <developer>
             <id>aandryashin</id>
