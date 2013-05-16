@@ -9,3 +9,8 @@ target
 *.jar
 *.war
 *.ear
+
+#Eclipse files
+.project
+.settings
+.classpath
