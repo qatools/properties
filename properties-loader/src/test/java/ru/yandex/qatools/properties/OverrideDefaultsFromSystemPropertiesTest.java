@@ -1,15 +1,14 @@
 package ru.yandex.qatools.properties;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import ru.yandex.qatools.properties.testdata.ProxyProperties;
 import ru.yandex.qatools.properties.testdata.ProxyPropertiesFactory;
-
-import java.util.Properties;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * @author Artem Eroshenko eroshenkoam
