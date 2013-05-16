@@ -1,17 +1,17 @@
 package ru.yandex.qatools.properties;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import ru.yandex.qatools.properties.testdata.ProxyProperties;
-import ru.yandex.qatools.properties.testdata.ProxyPropertiesFactory;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileReader;
 import java.util.Properties;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import ru.yandex.qatools.properties.testdata.ProxyProperties;
+import ru.yandex.qatools.properties.testdata.ProxyPropertiesFactory;
 
 /**
  * @author Artem Eroshenko eroshenkoam
