@@ -11,7 +11,7 @@
     * [Create Multi File Configuration][create-multi-file-configuration]
 * [Property Loader Extension](#property-loader-extension)
     * [Conversion Data Types](#conversion-data-types)
-    * [Creating Specific Converter][creation-specific-converter]
+    * [Creating Specific Converter][creation-custom-converter]
 
 В тестах часто приходится работать с переменными окружения. Причем в зависимости от этих переменных поведение тестов
 может меняться. Для работы с properties-файлами мы разработали несложную обертку.
@@ -190,7 +190,7 @@ private URI aURI;
 
 Если вам по какой-то причине не хватает этих типов, то вы всегда можете сделать и использовать свой конвертер.
 О том, как это можно использовать нужно почтитать в статье
-["Создание собственного конвертера"][creation-specific-converter]
+["Создание собственного конвертера"][creation-custom-converter]
 
-[creation-specific-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-specific-converter.ru.md
+[creation-custom-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-converter.ru.md
 [create-multi-file-configuration]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/create-multi-file-configuration.ru.md
