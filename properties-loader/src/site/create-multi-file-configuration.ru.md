@@ -53,9 +53,9 @@ PropertyLoader ищет аннотации @Resource.Classpath, @Resource.File, 
 	}
 ```
 
-и передать этот метод в загрузчик при инициализации нашего класса:
+и передать этот метод в загрузчик в конструкторе нашего класса:
 ```java
-	public MultiFileProperty() {
+	public UserProperties() {
 		PropertyLoader.populate(this, loadProperties());
 	}
 ```
