@@ -8,6 +8,7 @@
     * [Property Class Initialisation](#property-class-initialisation)
     * [System Properties Overriding](#system-properties-overriding)
     * [Properties Priorities](#properties-priority)
+    * [Create Multi File Configuration][create-multi-file-configuration]
 * [Property Loader Extension](#property-loader-extension)
     * [Conversion Data Types](#conversion-data-types)
     * [Creating Specific Converter][creation-specific-converter]
@@ -142,6 +143,9 @@ assertThat(proxyProperties.getHost(), equatlTo(3133));
 - значения переменных из property-файла. Средний приоритет.
 - объявленные значения переменных. Наименьший приоритет.
 
+Если по какой-то причине вам не нравится существующий приоритет или принцип инициалиции объектов, 
+то вы можете перелпередить его следуя примеру [Загрузка кофигураций в зависимости от окружения][create-multi-file-configuration]
+
 ## Property Loader Extension
 
 ### Conversion Data Types
@@ -189,3 +193,4 @@ private URI aURI;
 ["Создание собственного конвертера"][creation-specific-converter]
 
 [creation-specific-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-specific-converter.ru.md
+[create-multi-file-configuration]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/create-multi-file-configuration.ru.md
