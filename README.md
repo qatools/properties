@@ -25,7 +25,7 @@
 <dependency>
     <groupId>ru.yandex.qatools.properties</groupId>
     <artifactId>properties-loader</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
 </dependency>
 ```
 
