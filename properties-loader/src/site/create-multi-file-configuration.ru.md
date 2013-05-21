@@ -40,7 +40,14 @@ public class UserProperties {
 ```
 
 Метод PropertyLoader.populate может принимать на вход Properties, которыми нужно заполнить наш бин. По дефолту,
-PropertyLoader ищет аннотации @Resource.Classpath, @Resource.File, а так же считывает свойства из переменных окружения.
+PropertyLoader ищет аннотации @Resource.Classpath, @Resource.File, @Resource.ClasspathInProperty, а так же считывает
+свойства из переменных окружения.
+
+Использование аннотации @Resource.ClasspathInProperty дает такой же эффект, как и аннотация @Resource.Classpath, за
+исключением того, что имя файла в classpath берется не напрямую из аннотации, а из системной проперти, имя которой
+указано как значение @Resource.ClasspathInProperty.
+
+
 Нам остётся написать метод, который будет возвращать Properties, считаный из нужного нам файла:
 ```java
 	private static Properties loadProperties() {

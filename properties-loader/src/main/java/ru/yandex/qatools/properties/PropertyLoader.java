@@ -61,6 +61,14 @@ public final class PropertyLoader {
             result.putAll(readProperties(new java.io.File(path)));
         }
 
+        if (clazz.isAnnotationPresent(Resource.ClasspathInProperty.class)) {
+            String property = clazz.getAnnotation(Resource.ClasspathInProperty.class).value();
+            String path = System.getProperty(property);
+            if (path != null && !path.equals("")) {
+                result.putAll(readProperties(ClassLoader.getSystemResourceAsStream(path)));
+            }
+        }
+
         result.putAll(System.getProperties());
         return result;
     }
