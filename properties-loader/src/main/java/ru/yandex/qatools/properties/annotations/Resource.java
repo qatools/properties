@@ -20,4 +20,11 @@ public interface Resource {
     public @interface Classpath {
         String value();
     }
+
+
+    @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+    @Target({java.lang.annotation.ElementType.TYPE})
+    public @interface ClasspathInProperty {
+        String value();
+    }
 }
