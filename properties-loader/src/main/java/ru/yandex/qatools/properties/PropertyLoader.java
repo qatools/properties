@@ -3,6 +3,7 @@ package ru.yandex.qatools.properties;
 import ru.yandex.qatools.properties.annotations.Resource;
 import ru.yandex.qatools.properties.decorators.DefaultFieldDecorator;
 import ru.yandex.qatools.properties.decorators.FieldDecorator;
+import ru.yandex.qatools.properties.exeptions.PropertyLoaderException;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
@@ -43,7 +44,9 @@ public final class PropertyLoader {
                     field.setAccessible(true);
                     field.set(bean, value);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(String.format("Can't access property bean field"), e);
+                    throw new PropertyLoaderException(
+                            String.format("Can not set bean <%s> field <%s> value", bean, field),
+                            e);
                 }
             }
         }
