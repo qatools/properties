@@ -43,7 +43,7 @@ public final class PropertyLoader {
                     field.setAccessible(true);
                     field.set(bean, value);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(String.format("Can't access property bean field"), e);
                 }
             }
         }

@@ -69,7 +69,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
         try {
             return field.getAnnotation(Use.class).value().newInstance();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 }
