@@ -1,7 +1,6 @@
 package ru.yandex.qatools.properties.decorators;
 
 import java.lang.reflect.Field;
-import java.util.Properties;
 
 /**
  * User: eroshenkoam
@@ -9,5 +8,5 @@ import java.util.Properties;
  */
 public interface FieldDecorator {
 
-    public Object decorate(Field field);
+    Object decorate(Field field);
 }

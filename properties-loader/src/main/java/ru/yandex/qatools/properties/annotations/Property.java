@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Target({java.lang.annotation.ElementType.FIELD})
 public @interface Property {
 
-    public String value();
+    String value();
 }

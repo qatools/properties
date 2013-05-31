@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Target({java.lang.annotation.ElementType.FIELD})
 public @interface Use {
 
-    public Class<? extends Converter> value();
+    Class<? extends Converter> value();
 }

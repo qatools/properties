@@ -11,7 +11,7 @@ import java.net.URI;
 public class URIConverter extends AbstractConverter {
 
     @Override
-    protected Object convertToType(Class aClass, Object o) throws Throwable {
+    protected Object convertToType(Class aClass, Object o) {
         return URI.create(o.toString());
     }
 

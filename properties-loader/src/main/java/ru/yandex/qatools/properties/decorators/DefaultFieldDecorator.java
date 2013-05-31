@@ -53,7 +53,6 @@ public class DefaultFieldDecorator implements FieldDecorator {
         try {
             return converter.convert(field.getType(), properties.getProperty(key));
         } catch (ConversionException e) {
-            System.out.println(e);
             return null;
         }
     }
