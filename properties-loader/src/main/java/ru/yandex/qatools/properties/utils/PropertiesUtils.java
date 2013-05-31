@@ -1,6 +1,7 @@
 package ru.yandex.qatools.properties.utils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 /**
@@ -24,7 +25,7 @@ public final class PropertiesUtils {
         if (inputStream == null) {
             return new Properties();
         } else {
-            return readProperties(new InputStreamReader(inputStream));
+            return readProperties(new InputStreamReader(inputStream, Charset.defaultCharset()));
         }
     }
 
