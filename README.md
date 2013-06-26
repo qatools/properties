@@ -5,7 +5,7 @@
     * [Project Structure](#project-structure)
     * [Property File Creation](#property-file-creation)
     * [Property Class Creation](#property-class-creation)
-    * [Property Class Initialisation](#property-class-initialisation)
+    * [Property Class Initialization](#property-class-initialiszation)
     * [System Properties Overriding](#system-properties-overriding)
     * [Properties Priorities](#properties-priority)
     * [Create Multi File Configuration][create-multi-file-configuration]
@@ -110,7 +110,7 @@ public class ProxyProperties {
 }
 ```
 
-### Property Class Initialisation
+### Property Class Initialization
 
 В конструкторе класса `ProxyProperties` вызывается статический метод `PropertyLoader.populate(this)`, 
 который инициализирует поля класса из файла `proxy.properties` 
