@@ -1,14 +1,14 @@
 package ru.yandex.qatools.properties;
 
-import ru.yandex.qatools.properties.annotations.Resource;
+import ru.yandex.qatools.properties.annotations.With;
 import ru.yandex.qatools.properties.decorators.DefaultFieldDecorator;
 import ru.yandex.qatools.properties.decorators.FieldDecorator;
 import ru.yandex.qatools.properties.exeptions.PropertyLoaderException;
+import ru.yandex.qatools.properties.loadhelper.DefaultPropertyProvider;
+import ru.yandex.qatools.properties.loadhelper.PropertyProvider;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
-
-import static ru.yandex.qatools.properties.utils.PropertiesUtils.readProperties;
 
 /**
  * User: eroshenkoam
@@ -20,11 +20,13 @@ public final class PropertyLoader {
     }
 
     public static <T> void populate(T bean) {
-        populate(bean, loadProperties(bean.getClass()));
+        populate(bean, new Properties());
     }
 
     public static <T> void populate(T bean, Properties properties) {
-        populate(bean, new DefaultFieldDecorator(properties));
+        PropertyProvider provider = instantiatePropertyProvider(bean);
+        Properties completed = provider.provide(bean, properties);
+        populate(bean, new DefaultFieldDecorator(completed));
     }
 
     public static <T> void populate(T bean, FieldDecorator decorator) {
@@ -52,20 +54,20 @@ public final class PropertyLoader {
         }
     }
 
-    private static Properties loadProperties(Class<?> clazz) {
-        Properties result = new Properties();
-        if (clazz.isAnnotationPresent(Resource.Classpath.class)) {
-            String path = clazz.getAnnotation(Resource.Classpath.class).value();
-            result.putAll(readProperties(ClassLoader.getSystemResourceAsStream(path)));
+    private static <T> PropertyProvider instantiatePropertyProvider(T bean) {
+        Class<?> clazz = bean.getClass();
+        if (clazz.isAnnotationPresent(With.class)) {
+            try {
+                return clazz.getAnnotation(With.class).value().newInstance();
+            } catch (InstantiationException e) {
+                throw new PropertyLoaderException("Can't create instance property provider in class "
+                        + bean.getClass().getName(), e);
+            } catch (IllegalAccessException e) {
+                throw new PropertyLoaderException("Can't load property provider in class "
+                        + bean.getClass().getName(), e);
+            }
         }
-
-        if (clazz.isAnnotationPresent(Resource.File.class)) {
-            String path = clazz.getAnnotation(Resource.File.class).value();
-            result.putAll(readProperties(new java.io.File(path)));
-        }
-
-        result.putAll(System.getProperties());
-        return result;
+        return new DefaultPropertyProvider();
     }
 
 
