@@ -9,6 +9,7 @@
     * [System Properties Overriding](#system-properties-overriding)
     * [Properties Priorities](#properties-priority)
     * [Create Multi File Configuration][create-multi-file-configuration]
+    * [Own Property-Provider][creation-custom-property-provider]
 * [Property Loader Extension](#property-loader-extension)
     * [Conversion Data Types](#conversion-data-types)
     * [Creating Specific Converter][creation-custom-converter]
@@ -145,7 +146,7 @@ assertThat(proxyProperties.getHost(), equatlTo(3133));
 
 Если по какой-то причине вам не нравится существующий приоритет или принцип инициалиции объектов, 
 то вы можете переопределить его следуя примеру [Загрузка кофигураций в зависимости от окружения (частный метод)][create-multi-file-configuration]
-или воспользовавшись мануалом по созданию [собственного загрузчика пропертей][creation-custom-property-provider].
+или воспользовавшись мануалом по созданию [Cобственного загрузчика пропертей][creation-custom-property-provider].
 
 ## Property Loader Extension
 
@@ -195,3 +196,4 @@ private URI aURI;
 
 [creation-custom-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-converter.ru.md
 [create-multi-file-configuration]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/create-multi-file-configuration.ru.md
+[creation-custom-property-provider]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-property-provider.ru.md
