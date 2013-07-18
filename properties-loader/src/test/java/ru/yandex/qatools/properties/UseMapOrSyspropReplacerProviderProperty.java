@@ -3,7 +3,7 @@ package ru.yandex.qatools.properties;
 import ru.yandex.qatools.properties.annotations.Property;
 import ru.yandex.qatools.properties.annotations.Resource;
 import ru.yandex.qatools.properties.annotations.With;
-import ru.yandex.qatools.properties.propertyprovider.MapOrSyspropPathReplacerProvider;
+import ru.yandex.qatools.properties.providers.MapOrSyspropPathReplacerProvider;
 
 import java.util.Properties;
 

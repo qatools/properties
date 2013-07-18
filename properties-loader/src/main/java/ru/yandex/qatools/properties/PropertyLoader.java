@@ -4,8 +4,8 @@ import ru.yandex.qatools.properties.annotations.With;
 import ru.yandex.qatools.properties.decorators.DefaultFieldDecorator;
 import ru.yandex.qatools.properties.decorators.FieldDecorator;
 import ru.yandex.qatools.properties.exeptions.PropertyLoaderException;
-import ru.yandex.qatools.properties.propertyprovider.DefaultPropertyProvider;
-import ru.yandex.qatools.properties.propertyprovider.PropertyProvider;
+import ru.yandex.qatools.properties.providers.DefaultPropertyProvider;
+import ru.yandex.qatools.properties.providers.PropertyProvider;
 
 import java.lang.reflect.Field;
 import java.util.Properties;

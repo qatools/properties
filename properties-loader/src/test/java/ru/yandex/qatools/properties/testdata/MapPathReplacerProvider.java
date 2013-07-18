@@ -1,6 +1,6 @@
 package ru.yandex.qatools.properties.testdata;
 
-import ru.yandex.qatools.properties.propertyprovider.DefaultPropertyProvider;
+import ru.yandex.qatools.properties.providers.DefaultPropertyProvider;
 
 import java.util.Properties;
 import java.util.regex.Matcher;

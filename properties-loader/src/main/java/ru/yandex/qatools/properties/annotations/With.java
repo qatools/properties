@@ -1,6 +1,6 @@
 package ru.yandex.qatools.properties.annotations;
 
-import ru.yandex.qatools.properties.propertyprovider.PropertyProvider;
+import ru.yandex.qatools.properties.providers.PropertyProvider;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package ru.yandex.qatools.properties.propertyprovider;
+package ru.yandex.qatools.properties.providers;
 
 import ru.yandex.qatools.properties.annotations.Resource;
 
