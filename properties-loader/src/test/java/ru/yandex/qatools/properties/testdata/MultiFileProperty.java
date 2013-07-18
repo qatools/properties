@@ -22,15 +22,15 @@ public class MultiFileProperty {
 	private String property = "undefined";
 
 	public String getProperty() {
-		return property;
+        return property;
 	}
 
 	private static Properties loadProperties() {
 		Properties result = new Properties();
 		String filePath = System.getProperty("property.file");
-		if (filePath != null) {
+        if (filePath != null) {
 			result.putAll(readProperties(ClassLoader.getSystemResourceAsStream(filePath)));
 		}
-		return result;
+        return result;
 	}
 }
