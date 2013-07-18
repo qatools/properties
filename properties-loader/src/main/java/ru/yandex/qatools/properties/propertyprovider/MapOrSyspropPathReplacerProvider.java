@@ -1,4 +1,4 @@
-package ru.yandex.qatools.properties.loadhelper;
+package ru.yandex.qatools.properties.propertyprovider;
 
 import java.util.Properties;
 import java.util.regex.Matcher;
