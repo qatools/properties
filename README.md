@@ -157,7 +157,7 @@ assertThat(proxyProperties.getHost(), equatlTo(3133));
 ```java
 @With(MapOrSyspropPathReplacerProvider.class)
 ```
-Подробнее по применению в [тесте][https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/test/java/ru/yandex/qatools/properties/CustomPropertyProviderTest.java]
+Подробнее по применению в [тесте][custom-provider-test]
 
 
 ## Property Loader Extension
@@ -206,6 +206,7 @@ private URI aURI;
 О том, как это можно использовать нужно почтитать в статье
 ["Создание собственного конвертера"][creation-custom-converter]
 
+[custom-provider-test]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/test/java/ru/yandex/qatools/properties/CustomPropertyProviderTest.java
 [creation-custom-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-converter.ru.md
 [create-multi-file-configuration]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/create-multi-file-configuration.ru.md
 [creation-custom-property-provider]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-property-provider.ru.md
