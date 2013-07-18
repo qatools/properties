@@ -29,17 +29,19 @@ public class MapOrSyspropPathReplacerProvider extends DefaultPropertyProvider {
 
     private String replaceWithMapProps(String path, Properties properties) {
         Matcher matcher = Pattern.compile(MAP_PROP_KEY_PATTERN).matcher(path);
+        String replaced = path;
         while (matcher.find()) {
-            path = path.replace(matcher.group(0), properties.getProperty(matcher.group(1), ""));
+            replaced = replaced.replace(matcher.group(0), properties.getProperty(matcher.group(1), ""));
         }
-        return path;
+        return replaced;
     }
 
     private String replaceWithSystemProps(String path) {
         Matcher matcher = Pattern.compile(SYS_PROP_KEY_PATTERN).matcher(path);
+        String replaced = path;
         while (matcher.find()) {
-            path = path.replace(matcher.group(0), System.getProperty(matcher.group(1), ""));
+            replaced = replaced.replace(matcher.group(0), System.getProperty(matcher.group(1), ""));
         }
-        return path;
+        return replaced;
     }
 }

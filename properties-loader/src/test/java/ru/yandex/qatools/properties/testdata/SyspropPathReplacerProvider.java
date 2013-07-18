@@ -23,12 +23,12 @@ public class SyspropPathReplacerProvider extends DefaultPropertyProvider {
     public String classpath(Class<?> clazz, Properties properties) {
         return replaceWithSystemProps(super.classpath(clazz, properties));
     }
-
     private String replaceWithSystemProps(String path) {
         Matcher matcher = Pattern.compile(SYS_PROP_KEY_PATTERN).matcher(path);
+        String replaced = path;
         while (matcher.find()) {
-            path = path.replace(matcher.group(0), System.getProperty(matcher.group(1), ""));
+            replaced = replaced.replace(matcher.group(0), System.getProperty(matcher.group(1), ""));
         }
-        return path;
+        return replaced;
     }
 }

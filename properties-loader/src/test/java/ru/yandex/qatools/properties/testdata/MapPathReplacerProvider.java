@@ -24,11 +24,14 @@ public class MapPathReplacerProvider extends DefaultPropertyProvider {
         return replaceWithMapProps(super.classpath(clazz, properties), properties);
     }
 
+
     private String replaceWithMapProps(String path, Properties properties) {
         Matcher matcher = Pattern.compile(MAP_PROP_KEY_PATTERN).matcher(path);
+        String replaced = path;
         while (matcher.find()) {
-            path = path.replace(matcher.group(0), properties.getProperty(matcher.group(1), ""));
+            replaced = replaced.replace(matcher.group(0), properties.getProperty(matcher.group(1), ""));
         }
-        return path;
+        return replaced;
     }
+
 }
