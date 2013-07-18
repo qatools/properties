@@ -148,6 +148,18 @@ assertThat(proxyProperties.getHost(), equatlTo(3133));
 то вы можете переопределить его следуя примеру [Загрузка кофигураций в зависимости от окружения (частный метод)][create-multi-file-configuration]
 или воспользовавшись мануалом по созданию [Cобственного загрузчика пропертей][creation-custom-property-provider].
 
+Уже доступен провайдер, позволяющий превращать пути вида
+```java
+@Resource.Classpath("${system.file.name}.path.${map.scope.value}.properties")
+```
+в реальные пути. Подключить его можно аннотацией
+
+```java
+@With(MapOrSyspropPathReplacerProvider.class)
+```
+Подробнее по применению в [тесте][https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/test/java/ru/yandex/qatools/properties/CustomPropertyProviderTest.java]
+
+
 ## Property Loader Extension
 
 ### Conversion Data Types

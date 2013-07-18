@@ -61,4 +61,18 @@ public class CustomPropertyProviderTest {
         UseMapReplacerProviderProperty mfp = new UseMapReplacerProviderProperty("second", "production");
         assertThat(mfp.getProperty(), equalTo("production"));
     }
+
+    @Test
+    public void loadTestingPropertyBothWithMapAndSysprops() {
+        System.setProperty("file.name", "first");
+        UseMapOrSyspropReplacerProviderProperty mfp = new UseMapOrSyspropReplacerProviderProperty("testing");
+        assertThat(mfp.getProperty(), equalTo("testing"));
+    }
+
+    @Test
+    public void loadProductionPropertyBothWithMapAndSysprops() {
+        System.setProperty("file.name", "second");
+        UseMapOrSyspropReplacerProviderProperty mfp = new UseMapOrSyspropReplacerProviderProperty("production");
+        assertThat(mfp.getProperty(), equalTo("production"));
+    }
 }
