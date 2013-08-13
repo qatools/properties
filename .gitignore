@@ -1,6 +1,7 @@
 #Idea Files
 .idea
 *.iml
+*.ipr
 
 *.class
 target
