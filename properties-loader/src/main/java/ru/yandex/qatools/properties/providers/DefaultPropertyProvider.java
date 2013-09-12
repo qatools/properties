@@ -20,7 +20,7 @@ public class DefaultPropertyProvider implements PropertyProvider {
 
         if (have(clazz, Resource.Classpath.class)) {
             String path = classpath(clazz, properties);
-            properties.putAll(readProperties(ClassLoader.getSystemResourceAsStream(path)));
+            properties.putAll(readProperties(getClassLoader().getSystemResourceAsStream(path)));
         }
 
         if (have(clazz, Resource.File.class)) {
@@ -43,5 +43,19 @@ public class DefaultPropertyProvider implements PropertyProvider {
 
     protected String classpath(Class<?> clazz, Properties properties) {
         return clazz.getAnnotation(Resource.Classpath.class).value();
+    }
+
+    private ClassLoader getClassLoader() {
+        ClassLoader classLoader = null;
+        try {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        } catch (SecurityException e) {
+            // do nothing
+        } finally {
+            if (classLoader == null) {
+                return ClassLoader.getSystemClassLoader();
+            }
+            return classLoader;
+        }
     }
 }
