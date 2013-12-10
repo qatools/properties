@@ -5,9 +5,9 @@
     * [Project Structure](#project-structure)
     * [Property File Creation](#property-file-creation)
     * [Property Class Creation](#property-class-creation)
-    * [Property Class Initialization](#property-class-initialiszation)
+    * [Property Class Initialization](#property-class-initialization)
     * [System Properties Overriding](#system-properties-overriding)
-    * [Properties Priorities](#properties-priority)
+    * [Properties Priorities](#properties-priorities)
     * [Create Multi File Configuration][create-multi-file-configuration]
     * [Own Property-Provider][creation-custom-property-provider]
 * [Property Loader Extension](#property-loader-extension)
