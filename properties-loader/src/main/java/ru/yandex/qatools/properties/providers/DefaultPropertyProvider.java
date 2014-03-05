@@ -20,7 +20,7 @@ public class DefaultPropertyProvider implements PropertyProvider {
 
         if (have(clazz, Resource.Classpath.class)) {
             String path = classpath(clazz, properties);
-            properties.putAll(readProperties(getClassLoader().getSystemResourceAsStream(path)));
+            properties.putAll(readProperties(getClassLoader().getResourceAsStream(path)));
         }
 
         if (have(clazz, Resource.File.class)) {
