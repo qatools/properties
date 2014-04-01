@@ -10,7 +10,7 @@
 
     <groupId>ru.yandex.qatools.properties</groupId>
     <artifactId>properties</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5</version>
 
     <organization>
         <name>Yandex</name>
