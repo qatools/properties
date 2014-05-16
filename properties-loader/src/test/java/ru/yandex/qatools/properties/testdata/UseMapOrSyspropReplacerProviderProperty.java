@@ -1,5 +1,6 @@
-package ru.yandex.qatools.properties;
+package ru.yandex.qatools.properties.testdata;
 
+import ru.yandex.qatools.properties.PropertyLoader;
 import ru.yandex.qatools.properties.annotations.Property;
 import ru.yandex.qatools.properties.annotations.Resource;
 import ru.yandex.qatools.properties.annotations.With;
