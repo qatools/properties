@@ -11,7 +11,7 @@ import java.util.Properties;
  * @author artkoshelev
  */
 @Resource.Classpath("${map.file.name}.path.${map.scope.value}.properties")
-@With(MapPathReplacerProvider.class)
+@With(MapPropPathReplacerProvider.class)
 public class UseMapReplacerProviderProperty {
 
     public UseMapReplacerProviderProperty(String name, String scope) {

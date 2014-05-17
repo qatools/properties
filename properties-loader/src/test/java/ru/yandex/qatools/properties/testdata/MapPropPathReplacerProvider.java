@@ -10,20 +10,20 @@ import java.util.Properties;
  * Date: 17.07.13
  * Time: 19:58
  */
-public class SyspropPathReplacerProvider extends DefaultPropertyProvider {
-    public static final String SYS_PROP_KEY_PATTERN = "\\$\\{system\\.([^\\}]*)\\}";
+public class MapPropPathReplacerProvider extends DefaultPropertyProvider {
+    public static final String MAP_PROP_KEY_PATTERN = "\\$\\{map\\.([^\\}]*)\\}";
 
     @Override
     public String[] filepath(Class<?> clazz, Properties properties) {
         return new PropsReplacer(super.filepath(clazz, properties))
-                .replaceProps(SYS_PROP_KEY_PATTERN, System.getProperties())
+                .replaceProps(MAP_PROP_KEY_PATTERN, properties)
                 .getPathsAsArray();
     }
 
     @Override
     public String[] classpath(Class<?> clazz, Properties properties) {
         return new PropsReplacer(super.classpath(clazz, properties))
-                .replaceProps(SYS_PROP_KEY_PATTERN, System.getProperties())
+                .replaceProps(MAP_PROP_KEY_PATTERN, properties)
                 .getPathsAsArray();
     }
 }

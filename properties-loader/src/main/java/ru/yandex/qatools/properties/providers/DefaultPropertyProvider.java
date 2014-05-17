@@ -19,13 +19,17 @@ public class DefaultPropertyProvider implements PropertyProvider {
         Class<?> clazz = bean.getClass();
 
         if (have(clazz, Resource.Classpath.class)) {
-            String path = classpath(clazz, properties);
-            properties.putAll(readProperties(getClassLoader().getResourceAsStream(path)));
+            String[] paths = classpath(clazz, properties);
+            for (String path : paths) {
+                properties.putAll(readProperties(getClassLoader().getResourceAsStream(path)));
+            }
         }
 
         if (have(clazz, Resource.File.class)) {
-            String path = filepath(clazz, properties);
-            properties.putAll(readProperties(new java.io.File(path)));
+            String[] paths = filepath(clazz, properties);
+            for (String path : paths) {
+                properties.putAll(readProperties(new java.io.File(path)));
+            }
         }
 
         properties.putAll(System.getProperties());
@@ -37,11 +41,11 @@ public class DefaultPropertyProvider implements PropertyProvider {
         return clazz.isAnnotationPresent(anno);
     }
 
-    protected String filepath(Class<?> clazz, Properties properties) {
+    protected String[] filepath(Class<?> clazz, Properties properties) {
         return clazz.getAnnotation(Resource.File.class).value();
     }
 
-    protected String classpath(Class<?> clazz, Properties properties) {
+    protected String[] classpath(Class<?> clazz, Properties properties) {
         return clazz.getAnnotation(Resource.Classpath.class).value();
     }
 
@@ -49,13 +53,13 @@ public class DefaultPropertyProvider implements PropertyProvider {
         ClassLoader classLoader = null;
         try {
             classLoader = Thread.currentThread().getContextClassLoader();
-        } catch (SecurityException e) {
+        } catch (SecurityException ignored) {
             // do nothing
         } finally {
             if (classLoader == null) {
-                return ClassLoader.getSystemClassLoader();
+                classLoader = ClassLoader.getSystemClassLoader();
             }
-            return classLoader;
         }
+        return classLoader;
     }
 }

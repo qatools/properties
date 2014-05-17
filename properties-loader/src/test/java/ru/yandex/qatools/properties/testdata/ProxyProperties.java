@@ -17,6 +17,12 @@ public class ProxyProperties {
     @Property(ProxyPropertiesFactory.PROXY_ACTIVE_PROPERTY_KEY)
     protected boolean active = false;
 
+    @Property(ProxyPropertiesFactory.PROXY_LOGIN_PROPERTY_KEY)
+    protected String login = "default-login";
+
+    @Property(ProxyPropertiesFactory.PROXY_PASSWORD_PROPERTY_KEY)
+    protected String pass = "default-pass";
+
     public String getHost() {
         return host;
     }
@@ -27,5 +33,13 @@ public class ProxyProperties {
 
     public boolean isActive() {
         return active;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPass() {
+        return pass;
     }
 }

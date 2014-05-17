@@ -12,12 +12,12 @@ public interface Resource {
     @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
     @Target({java.lang.annotation.ElementType.TYPE})
     public @interface File {
-        String value();
+        String[] value();
     }
 
     @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
     @Target({java.lang.annotation.ElementType.TYPE})
     public @interface Classpath {
-        String value();
+        String[] value();
     }
 }

@@ -2,6 +2,7 @@ package ru.yandex.qatools.properties;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import ru.yandex.qatools.properties.testdata.UseMapOrSyspropReplacerProviderProperty;
 import ru.yandex.qatools.properties.testdata.UseMapReplacerProviderProperty;
 import ru.yandex.qatools.properties.testdata.UseSystemReplacerProviderProperty;
 
