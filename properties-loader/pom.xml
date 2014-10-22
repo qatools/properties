@@ -11,23 +11,24 @@
     <name>Yandex QATools Properties Loader</name>
 
     <dependencies>
+
         <dependency>
             <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils-core</artifactId>
-            <version>1.8.3</version>
+            <artifactId>commons-beanutils</artifactId>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.8.4</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 
