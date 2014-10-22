@@ -206,6 +206,10 @@ private URI aURI;
 О том, как это можно использовать нужно почтитать в статье
 ["Создание собственного конвертера"][creation-custom-converter]
 
+## Ready to use converters: 
+- `ru.yandex.qatools.properties.converters.EnumConverter`
+
+
 [custom-provider-test]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/test/java/ru/yandex/qatools/properties/CustomPropertyProviderTest.java
 [creation-custom-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-converter.ru.md
 [create-multi-file-configuration]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/create-multi-file-configuration.ru.md

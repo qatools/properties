@@ -3,7 +3,6 @@ package ru.yandex.qatools.properties.converters;
 import org.apache.commons.beanutils.converters.AbstractConverter;
 
 import java.net.URI;
-import java.net.URL;
 
 /**
  * @author Artem Eroshenko eroshenkoam
