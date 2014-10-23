@@ -3,6 +3,8 @@ package ru.yandex.qatools.properties.testdata;
 import ru.yandex.qatools.properties.PropertyLoader;
 import ru.yandex.qatools.properties.annotations.Property;
 import ru.yandex.qatools.properties.annotations.Resource;
+import ru.yandex.qatools.properties.annotations.Use;
+import ru.yandex.qatools.properties.converters.EnumConverter;
 
 import java.net.URI;
 import java.net.URL;
@@ -46,6 +48,10 @@ public class SupportedTypesProperties {
 
     @Property("supported.uri")
     private URI aURI;
+
+    @Property("supported.enum")
+    @Use(EnumConverter.class)
+    private PropEnum anEnum;
 
     public SupportedTypesProperties() {
         PropertyLoader.populate(this);
@@ -95,4 +101,7 @@ public class SupportedTypesProperties {
         return aURI;
     }
 
+    public PropEnum getEnum() {
+        return anEnum;
+    }
 }

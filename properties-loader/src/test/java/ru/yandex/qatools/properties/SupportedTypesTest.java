@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static ru.yandex.qatools.properties.testdata.PropEnum.valueOf;
 
 /**
  * @author Artem Eroshenko eroshenkoam
@@ -81,6 +82,12 @@ public class SupportedTypesTest {
     @Test
     public void uriTypeShouldSupported() throws Exception {
         assertThat(properties.getURI(), equalTo(URI.create(resource.getProperty("supported.uri"))));
+    }
+
+
+    @Test
+    public void enumTypeShouldSupported() throws Exception {
+        assertThat(properties.getEnum(), equalTo(valueOf(resource.getProperty("supported.enum").toUpperCase().trim())));
     }
 
 }
