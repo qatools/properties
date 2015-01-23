@@ -126,39 +126,35 @@ In our case `porxy.active = false`, it's mean by default proxy is disabled. You 
 
 ### System Properties Overriding
 
-Конфигурации в файле является дефолтной, ее всегда можно переопределить через системные переменные. 
-Так например, если запустить тот же самый код при выставленной системной проперти `proxy.active=true`, 
-то ситемные значения перекрою значения из файла и мы пойдем по ветке иницализации прокси. 
-Это становится удобно, когда вам необходимо запустить тесты на разных конфигурациях. 
+Configuration in property file is default and always can be overrided by system properties. 
 
 ### Properties Priorities
 
-Таким образом при инициализации класса используется следующий порядок инициализации:
-- значения системных переменных. Самый высокий приоритет.
-- значения переменных из property-файла. Средний приоритет.
-- объявленные значения переменных. Наименьший приоритет.
+There are the following property initialization order:
+- system properties. High priority
+- values from property file. Medium priority
+- default values from code. Low priority
 
-Если по какой-то причине вам не нравится существующий приоритет или принцип инициалиции объектов, 
-то вы можете переопределить его следуя примеру [Загрузка кофигураций в зависимости от окружения (частный метод)][create-multi-file-configuration]
-или воспользовавшись мануалом по созданию [Cобственного загрузчика пропертей][creation-custom-property-provider].
+You can change this order using an example [download configurations depending on environment][create-multi-file-configuration] or create [your own property loader][creation-custom-property-provider].
 
-Уже доступен провайдер, позволяющий превращать пути вида
+Already available  property loader which convert paths like this:
 ```java
 @Resource.Classpath("${system.file.name}.path.${map.scope.value}.properties")
 ```
-в реальные пути. Подключить его можно аннотацией
+
+to real pathes. You can enable it using annotation `@With`:
 
 ```java
 @With(MapOrSyspropPathReplacerProvider.class)
 ```
-Подробнее по применению в [тесте][custom-provider-test]
 
+More information [here][custom-provider-test]
 
 ## Property Loader Extension
 
 ### Conversion Data Types
 
-На данный момент поддерживается конвернтация во все примитивные типы данных + несколько стандартных:
+For know we support auto type casting for all primary types and few more:
 
 ```java
 @Property("supported.double")
@@ -196,13 +192,10 @@ private URI aURI;
 
 ```
 
-Если вам по какой-то причине не хватает этих типов, то вы всегда можете сделать и использовать свой конвертер.
-О том, как это можно использовать нужно почтитать в статье
-["Создание собственного конвертера"][creation-custom-converter]
+Also you can define your own converter. How to create your own converter you can read in [this note][creation-custom-converter]
 
 ## Ready to use converters: 
 - `ru.yandex.qatools.properties.converters.EnumConverter`
-
 
 [custom-provider-test]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/test/java/ru/yandex/qatools/properties/CustomPropertyProviderTest.java
 [creation-custom-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-converter.ru.md
