@@ -1,5 +1,7 @@
 # QATools Properties
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.properties/properties-loader/badge.svg?style=flat)] [![build](https://img.shields.io/teamcity/http/teamcity.qatools.ru/s/properties_development_deploy.svg?style=flat)](http://teamcity.qatools.ru/viewType.html?buildTypeId=properties_development_deploy&guest=1)
+
 * [Maven Dependencies](#maven-dependencies)
 * [Getting Started](#getting-started)
     * [Project Structure](#project-structure)
@@ -14,29 +16,27 @@
     * [Conversion Data Types](#conversion-data-types)
     * [Creating Specific Converter][creation-custom-converter]
 
-В тестах часто приходится работать с переменными окружения. Причем в зависимости от этих переменных поведение тестов
-может меняться. Для работы с properties-файлами мы разработали несложную обертку.
-Технически QATools Properties является настройкой над
-[Apache Common Bean Utils](http://commons.apache.org/proper/commons-beanutils/)
+Your test often use some environment variables. And test excecution can depends on this enviroment. QATools Properties wraps [Apache Common Bean Utils](http://commons.apache.org/proper/commons-beanutils/) and make work with environment more clear and easy.
 
 ## Maven Dependencies
 
-Стабильная версия:
+First step you need to add the following dependecy to your **pom.xml**:
+
 ```xml
 <dependency>
     <groupId>ru.yandex.qatools.properties</groupId>
     <artifactId>properties-loader</artifactId>
-    <version>1.5</version>
+    <version>{latest-version}</version>
 </dependency>
 ```
 
 ## Getting Started
 
-Работу библиотеки легче всего продемонстрировать на несложном примере конфигурирования прокси.
+To explain how the properties work let's look to the following example. This example shows how to configure *proxy server* for your tests.
 
 ### Project Structure
 
-В примере будет использоваться стандартная стурктура директорий, которую декларирует maven:
+We will use directory structure which Maven declare:
 
 ```
 - pom.xml
@@ -50,7 +50,7 @@
 
 ### Property File Creation
 
-Для начала, в ресурсах создаем файл `proxy.properties` для конфигурации прокси:
+First step create `proxy.properties` in resource directory for proxy configuration:
 
 ```properties
 proxy.host=proxy.yandex.ru
@@ -60,7 +60,7 @@ proxy.use=false
 
 ### Property Class Creation
 
-Далее, в исходниках создадим класс `ProxyProperties`, который имплементирует настройки прокси:
+Then create class `ProxyProperties`, which implements the configuration:
 
 ```java
 @Resource.Classpath("proxy.properties") //для иницализации класса будет использоваться файл proxy.poerties
@@ -93,9 +93,7 @@ public class ProxyProperties {
 }
 ```
 
-Если создавать проперти-файл вам не нужно, а вы хотите задать значения переменных по умолчанию в коде и при необходимости 
-перегружать их значениями из системных проперти, то просто не аннотируйте класс:
-
+If you don't need to create a property file you can specify a defaults in core. In this case you can override defaults using system properties. *Note:* you don't need to annotate `ProxyProperties` using `@Resource` annotation. 
 ```java
 public class ProxyProperties {
 
@@ -113,9 +111,7 @@ public class ProxyProperties {
 
 ### Property Class Initialization
 
-В конструкторе класса `ProxyProperties` вызывается статический метод `PropertyLoader.populate(this)`, 
-который инициализирует поля класса из файла `proxy.properties` 
-в соответствии со значением аннотаций `@Property`.
+In `ProxyProperties` constructor call `PropertyLoader.populate(this)` method, it's initialize class fields in accordance with `@Property` annotation.
 
 ```java
 ProxyProperties proxyProperties = new ProxyProperties();
