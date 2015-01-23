@@ -1,20 +1,19 @@
-# Загрузка кофигураций  в зависимости от окружения
+# Configurations depending on environment
 
-Иногда необходимо подключать различные файлы конфигураций для тестирования на разных тестовых средах.
-Допустим нам нужны разные пользователи для авторизации в тестах. 
+Sometimes you need to define the different configurations for different environments. Consider an example when we need a different users for authorization in tests.
 
-Создадим проперти-файл для тестового окружения 'testing.properties':
+First step create property file for test environment 'testing.properties':
 ```properties
 user = Ivan
 password = chelovek-divan
 ```
-и для предпродакшн окружения 'preprod.properties':
+and one more file for prepoduction environment 'preprod.properties':
 ```properties
 user = Oleg
 password = chelovek-strateg
 ```
 
-Создадим класс-обёртку, работающий с этими данными:
+Then create wrapper for the class working with this properties:
 ```java
 public class UserProperties {
 	@Property("user")
@@ -25,39 +24,36 @@ public class UserProperties {
 }
 ```
 
-Для того, чтобы проперти автоматически подгружались при создании этого класса, нужно добавить конструктор:
+Next step add constructor for autoload properties:
 ```java
 	public UserProperties() {
 		PropertyLoader.populate(this);
 	}
 ```
 
-Осталось научить наш класс работать с разными файлами. Загружать проперти из одного файла очень просто - достаточно
-добавить аннотацию @Resource.Classpath в которой указать имя этого файла:
+Now we need to configure *Properties* to work with different property files. Load properties from only one file so easy. Just add `@Resource.Classpath` annotation and sprcify file name:
 ```java
 @Resource.Classpath("testing.properties")
 public class UserProperties {
 ```
 
-Метод PropertyLoader.populate может принимать на вход Properties, которыми нужно заполнить наш бин. По дефолту,
-PropertyLoader ищет аннотации @Resource.Classpath, @Resource.File, а так же считывает свойства из переменных окружения.
-Нам остётся написать метод, который будет возвращать Properties, считаный из нужного нам файла:
+Method `PropertyLoader.populate` can accept `Properties`, which can fill our bean. By default `PropertyLoader` search for annotations `@Resource.Classpath`, `@Resource.File` and from system properties. All we need - write method reading a file which we need and returns `Properties`:
 ```java
-	private static Properties loadProperties() {
-		Properties result = new Properties();
-		String filePath = System.getProperty("property.file");
-		if (filePath != null) {
-			result.putAll(readProperties(ClassLoader.getSystemResourceAsStream(filePath)));
-		}
-		return result;
+private static Properties loadProperties() {
+	Properties result = new Properties();
+	String filePath = System.getProperty("property.file");
+	if (filePath != null) {
+		result.putAll(readProperties(ClassLoader.getSystemResourceAsStream(filePath)));
 	}
+	return result;
+}
 ```
 
-и передать этот метод в загрузчик в конструкторе нашего класса:
+then we need to specify this method in loader:
 ```java
-	public UserProperties() {
-		PropertyLoader.populate(this, loadProperties());
-	}
+public UserProperties() {
+	PropertyLoader.populate(this, loadProperties());
+}
 ```
 
-Полный пример реализации можно посмотреть в тесте LoadPropertiesDependsOnSystemPropertyTest.
+Full example of usage you can see in test `LoadPropertiesDependsOnSystemPropertyTest`.
