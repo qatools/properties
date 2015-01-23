@@ -63,20 +63,20 @@ proxy.use=false
 Then create class `ProxyProperties`, which implements the configuration:
 
 ```java
-@Resource.Classpath("proxy.properties") //для иницализации класса будет использоваться файл proxy.poerties
+@Resource.Classpath("proxy.properties") //for class initialization we will use a file proxy.poerties
 public class ProxyProperties {
 
     public ProxyProperties() {
-        PropertyLoader.populate(this); //инициализация полей класса значениями из файла
+        PropertyLoader.populate(this); //initialize fields
     }
 
-    @Property("proxy.host") //ключ проперти, по которой переменной будет выставлено значение
+    @Property("proxy.host") //key which will be used to find property in environment
     private String host;
 
-    @Property("proxy.port") //ключ проперти, по которой переменной будет выставлено значение
+    @Property("proxy.port") //key which will be used to find property in environment
     private int port;
 
-    @Property("proxy.active") //ключ проперти, по которой переменной будет выставлено значение
+    @Property("proxy.active") //key which will be used to find property in environment
     private boolean active;
 
     public String getHost() {
@@ -102,7 +102,7 @@ public class ProxyProperties {
     }
 
     @Property("proxy.host")
-    private String host = "localhost"; //определено дефолтное значение <localhost>
+    private String host = "localhost"; //default value <localhost>
 
    ...
    
@@ -120,11 +120,9 @@ assertThat(proxyProperties.getHost(), equatlTo("proxy.yandex.ru"));
 assertThat(proxyProperties.getHost(), equatlTo(3133));
 ```
 
-Удобство заключается в том, что при инициализаци полей происходит автоматическое приведение типов. 
-Если приведение типов невозможно, то переменная не инициализируется. 
-В данном случае, проперти `porxy.active = false`, а значит по дефолту прокси использоваться не будет. 
-Для того, чтобы воздействовать на этот механизм извне мы сделали возможность переопределения 
-конфигурации значениям системных переменных. 
+Usability of Properties is automating type casting of enviroment variables. If autocasting is impossible then variable was skipped. 
+
+In our case `porxy.active = false`, it's mean by default proxy is disabled. You can override this variable using system property.
 
 ### System Properties Overriding
 
