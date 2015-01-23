@@ -1,6 +1,6 @@
 # QATools Properties
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.properties/properties-loader/badge.svg?style=flat)] [![build](https://img.shields.io/teamcity/http/teamcity.qatools.ru/s/properties_development_deploy.svg?style=flat)](http://teamcity.qatools.ru/viewType.html?buildTypeId=properties_development_deploy&guest=1)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.properties/properties-loader/badge.svg?style=flat)](http://mvnrepository.com/artifact/ru.yandex.qatools.properties/properties-loader) [![build](https://img.shields.io/teamcity/http/teamcity.qatools.ru/s/properties_development_deploy.svg?style=flat)](http://teamcity.qatools.ru/viewType.html?buildTypeId=properties_development_deploy&guest=1)
 
 * [Maven Dependencies](#maven-dependencies)
 * [Getting Started](#getting-started)
