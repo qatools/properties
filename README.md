@@ -1,5 +1,10 @@
 # QATools Properties
 
+[![release](http://github-release-version.herokuapp.com/github/yandex-qatools/properties/release.svg?style=flat)](https://github.com/yandex-qatools/properties/releases/latest)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.properties/properties-loader/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.properties/properties-loader)  
+
+This library provides convinient way to work with properties. Using power of [Apache Common Bean Utils](http://commons.apache.org/proper/commons-beanutils/) it can handle property-files on hard drive, in classpath or get values from system properties
+
 * [Maven Dependencies](#maven-dependencies)
 * [Getting Started](#getting-started)
     * [Project Structure](#project-structure)
@@ -14,14 +19,9 @@
     * [Conversion Data Types](#conversion-data-types)
     * [Creating Specific Converter][creation-custom-converter]
 
-В тестах часто приходится работать с переменными окружения. Причем в зависимости от этих переменных поведение тестов
-может меняться. Для работы с properties-файлами мы разработали несложную обертку.
-Технически QATools Properties является настройкой над
-[Apache Common Bean Utils](http://commons.apache.org/proper/commons-beanutils/)
-
 ## Maven Dependencies
 
-Стабильная версия:
+Latest stable version:
 ```xml
 <dependency>
     <groupId>ru.yandex.qatools.properties</groupId>
@@ -30,9 +30,7 @@
 </dependency>
 ```
 
-## Getting Started
-
-Работу библиотеки легче всего продемонстрировать на несложном примере конфигурирования прокси.
+# Getting Started
 
 ### Project Structure
 
