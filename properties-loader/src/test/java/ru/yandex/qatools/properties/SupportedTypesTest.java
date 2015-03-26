@@ -6,6 +6,7 @@ import ru.yandex.qatools.properties.testdata.SupportedTypesProperties;
 
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -88,6 +89,16 @@ public class SupportedTypesTest {
     @Test
     public void enumTypeShouldSupported() throws Exception {
         assertThat(properties.getEnum(), equalTo(valueOf(resource.getProperty("supported.enum").toUpperCase().trim())));
+    }
+
+    @Test
+    public void charsetTypeShouldSupported() throws Exception {
+        assertThat(properties.getCharset(), equalTo(Charset.forName(resource.getProperty("supported.charset"))));
+    }
+
+    @Test
+    public void wrongCharsetShouldNotThrowAnException() throws Exception {
+        assertThat(properties.getInvalidCharset(), equalTo(null));
     }
 
 }
