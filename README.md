@@ -18,10 +18,13 @@ Latest stable version:
 
 # Getting Started
 
+The complete start guide can be found on [wiki](https://github.com/yandex-qatools/properties/wiki/Start-Guide)
+
 ### Property Class Creation
 
 ```java
-@Resource.Classpath("proxy.properties") // default values in  resources/proxy.properties
+// default values in resources/proxy.properties (or if not found, used values from resources/proxy.bak.properties)
+@Resource.Classpath({"proxy.properties", "proxy.bak.properties"})
 public class ProxyProperties {
 
     public ProxyProperties() {
