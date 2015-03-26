@@ -3,10 +3,12 @@ package ru.yandex.qatools.properties.decorators;
 import org.apache.commons.beanutils.*;
 import ru.yandex.qatools.properties.annotations.Property;
 import ru.yandex.qatools.properties.annotations.Use;
+import ru.yandex.qatools.properties.converters.CharsetConverter;
 import ru.yandex.qatools.properties.converters.URIConverter;
 
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 /**
@@ -23,6 +25,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
         this.converters = BeanUtilsBean.getInstance().getConvertUtils();
         this.converters.register(true, false, -1);
         this.converters.register(new URIConverter(), URI.class);
+        this.converters.register(new CharsetConverter(), Charset.class);
         this.properties = properties;
     }
 

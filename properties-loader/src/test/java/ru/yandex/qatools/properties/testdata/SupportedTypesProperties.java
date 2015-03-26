@@ -8,6 +8,7 @@ import ru.yandex.qatools.properties.converters.EnumConverter;
 
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * @author Artem Eroshenko eroshenkoam
@@ -52,6 +53,12 @@ public class SupportedTypesProperties {
     @Property("supported.enum")
     @Use(EnumConverter.class)
     private PropEnum anEnum;
+
+    @Property("supported.charset")
+    private Charset aCharset;
+
+    @Property("supported.invalid.charset")
+    private Charset anInvalidCharset;
 
     public SupportedTypesProperties() {
         PropertyLoader.populate(this);
@@ -103,5 +110,13 @@ public class SupportedTypesProperties {
 
     public PropEnum getEnum() {
         return anEnum;
+    }
+
+    public Charset getCharset() {
+        return aCharset;
+    }
+
+    public Charset getInvalidCharset() {
+        return anInvalidCharset;
     }
 }
