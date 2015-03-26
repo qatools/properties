@@ -5,20 +5,6 @@
 
 This library provides convinient way to work with properties. Using power of [Apache Common Bean Utils](http://commons.apache.org/proper/commons-beanutils/) it can handle property-files on hard drive, in classpath or get values from system properties
 
-* [Maven Dependencies](#maven-dependencies)
-* [Getting Started](#getting-started)
-    * [Project Structure](#project-structure)
-    * [Property File Creation](#property-file-creation)
-    * [Property Class Creation](#property-class-creation)
-    * [Property Class Initialization](#property-class-initialization)
-    * [System Properties Overriding](#system-properties-overriding)
-    * [Properties Priorities](#properties-priorities)
-    * [Create Multi File Configuration][create-multi-file-configuration]
-    * [Own Property-Provider][creation-custom-property-provider]
-* [Property Loader Extension](#property-loader-extension)
-    * [Conversion Data Types](#conversion-data-types)
-    * [Creating Specific Converter][creation-custom-converter]
-
 ## Maven Dependencies
 
 Latest stable version:
@@ -32,183 +18,42 @@ Latest stable version:
 
 # Getting Started
 
-### Project Structure
-
-В примере будет использоваться стандартная стурктура директорий, которую декларирует maven:
-
-```
-- pom.xml
-+ src
-  + test
-    + java
-      - ProxyProperties.java
-    + resources
-      - proxy.properties
-```
-
-### Property File Creation
-
-Для начала, в ресурсах создаем файл `proxy.properties` для конфигурации прокси:
-
-```properties
-proxy.host=proxy.yandex.ru
-proxy.port=3133
-proxy.use=false
-```
-
 ### Property Class Creation
 
-Далее, в исходниках создадим класс `ProxyProperties`, который имплементирует настройки прокси:
-
 ```java
-@Resource.Classpath("proxy.properties") //для иницализации класса будет использоваться файл proxy.poerties
+@Resource.Classpath("proxy.properties") // default values in  resources/proxy.properties
 public class ProxyProperties {
 
     public ProxyProperties() {
-        PropertyLoader.populate(this); //инициализация полей класса значениями из файла
+        PropertyLoader.populate(this); 
     }
 
-    @Property("proxy.host") //ключ проперти, по которой переменной будет выставлено значение
+    @Property("proxy.host") // key of property witch you want to handle
     private String host;
-
-    @Property("proxy.port") //ключ проперти, по которой переменной будет выставлено значение
-    private int port;
-
-    @Property("proxy.active") //ключ проперти, по которой переменной будет выставлено значение
-    private boolean active;
 
     public String getHost() {
         return host;
     }
-
-    public int getPort() {
-        return port;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
 }
 ```
 
-Если создавать проперти-файл вам не нужно, а вы хотите задать значения переменных по умолчанию в коде и при необходимости 
-перегружать их значениями из системных проперти, то просто не аннотируйте класс:
+### Property File Creation
 
-```java
-public class ProxyProperties {
+Put in your resources directory (mainly it `src/main/resources`) file `proxy.properties`
 
-    public ProxyProperties() {
-        PropertyLoader.populate(this);
-    }
-
-    @Property("proxy.host")
-    private String host = "localhost"; //определено дефолтное значение <localhost>
-
-   ...
-   
-}
+```properties
+proxy.host=proxy.yandex.ru
 ```
 
-### Property Class Initialization
+### Usage
 
-В конструкторе класса `ProxyProperties` вызывается статический метод `PropertyLoader.populate(this)`, 
-который инициализирует поля класса из файла `proxy.properties` 
-в соответствии со значением аннотаций `@Property`.
+Now you can get `proxy.host` property value with  
 
 ```java
-ProxyProperties proxyProperties = new ProxyProperties();
-assumeThat(proxyProperties.isActive(), equalTo(true));
-assertThat(proxyProperties.getHost(), equatlTo("proxy.yandex.ru"));
-assertThat(proxyProperties.getHost(), equatlTo(3133));
+String host = new ProxyProperties().getHost();
 ```
 
-Удобство заключается в том, что при инициализаци полей происходит автоматическое приведение типов. 
-Если приведение типов невозможно, то переменная не инициализируется. 
-В данном случае, проперти `porxy.active = false`, а значит по дефолту прокси использоваться не будет. 
-Для того, чтобы воздействовать на этот механизм извне мы сделали возможность переопределения 
-конфигурации значениям системных переменных. 
+It's easy to override value from system properties. E.g. when you run your code with `-Dproxy.host=ya.ru` it overrides the default value in properties file.
 
-### System Properties Overriding
+More about [Properties Priorities](https://github.com/yandex-qatools/properties/wiki/Properties-Priorities), [Conversion-Data-Types](https://github.com/yandex-qatools/properties/wiki/Conversion-Data-Types) can be foud on wiki
 
-Конфигурации в файле является дефолтной, ее всегда можно переопределить через системные переменные. 
-Так например, если запустить тот же самый код при выставленной системной проперти `proxy.active=true`, 
-то ситемные значения перекрою значения из файла и мы пойдем по ветке иницализации прокси. 
-Это становится удобно, когда вам необходимо запустить тесты на разных конфигурациях. 
-
-### Properties Priorities
-
-Таким образом при инициализации класса используется следующий порядок инициализации:
-- значения системных переменных. Самый высокий приоритет.
-- значения переменных из property-файла. Средний приоритет.
-- объявленные значения переменных. Наименьший приоритет.
-
-Если по какой-то причине вам не нравится существующий приоритет или принцип инициалиции объектов, 
-то вы можете переопределить его следуя примеру [Загрузка кофигураций в зависимости от окружения (частный метод)][create-multi-file-configuration]
-или воспользовавшись мануалом по созданию [Cобственного загрузчика пропертей][creation-custom-property-provider].
-
-Уже доступен провайдер, позволяющий превращать пути вида
-```java
-@Resource.Classpath("${system.file.name}.path.${map.scope.value}.properties")
-```
-в реальные пути. Подключить его можно аннотацией
-
-```java
-@With(MapOrSyspropPathReplacerProvider.class)
-```
-Подробнее по применению в [тесте][custom-provider-test]
-
-
-## Property Loader Extension
-
-### Conversion Data Types
-
-На данный момент поддерживается конвернтация во все примитивные типы данных + несколько стандартных:
-
-```java
-@Property("supported.double")
-private double aDouble;
-
-@Property("supported.float")
-private float aFloat;
-
-@Property("supported.short")
-private short aShort;
-
-@Property("supported.int")
-private int aInt;
-
-@Property("supported.byte")
-private byte aByte;
-
-@Property("supported.string")
-private String aString;
-
-@Property("supported.boolean")
-private boolean aBoolean;
-
-@Property("supported.long")
-private long aLong;
-
-@Property("supported.char")
-private char aChar;
-
-@Property("supported.url")
-private URL aURL;
-
-@Property("supported.uri")
-private URI aURI;
-
-```
-
-Если вам по какой-то причине не хватает этих типов, то вы всегда можете сделать и использовать свой конвертер.
-О том, как это можно использовать нужно почтитать в статье
-["Создание собственного конвертера"][creation-custom-converter]
-
-## Ready to use converters: 
-- `ru.yandex.qatools.properties.converters.EnumConverter`
-
-
-[custom-provider-test]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/test/java/ru/yandex/qatools/properties/CustomPropertyProviderTest.java
-[creation-custom-converter]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-converter.ru.md
-[create-multi-file-configuration]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/create-multi-file-configuration.ru.md
-[creation-custom-property-provider]: https://github.com/yandex-qatools/properties/blob/master/properties-loader/src/site/creation-custom-property-provider.ru.md
