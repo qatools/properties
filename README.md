@@ -12,7 +12,7 @@ Latest stable version:
 <dependency>
     <groupId>ru.yandex.qatools.properties</groupId>
     <artifactId>properties-loader</artifactId>
-    <version>1.5</version>
+    <version>${LATEST_VERSION}</version>
 </dependency>
 ```
 
