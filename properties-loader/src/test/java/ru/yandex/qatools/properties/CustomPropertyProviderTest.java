@@ -1,7 +1,10 @@
 package ru.yandex.qatools.properties;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import ru.yandex.qatools.properties.exeptions.PropertyLoaderException;
 import ru.yandex.qatools.properties.testdata.UseMapOrSyspropReplacerProviderProperty;
 import ru.yandex.qatools.properties.testdata.UseMapReplacerProviderProperty;
 import ru.yandex.qatools.properties.testdata.UseSystemReplacerProviderProperty;
@@ -16,8 +19,8 @@ import static org.junit.Assert.assertThat;
  */
 public class CustomPropertyProviderTest {
 
-    @BeforeClass
-    public static void clear() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         System.clearProperty("property");
     }
 
@@ -75,5 +78,10 @@ public class CustomPropertyProviderTest {
         System.setProperty("file.name", "second");
         UseMapOrSyspropReplacerProviderProperty mfp = new UseMapOrSyspropReplacerProviderProperty("production");
         assertThat(mfp.getProperty(), equalTo("production"));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty("property");
     }
 }

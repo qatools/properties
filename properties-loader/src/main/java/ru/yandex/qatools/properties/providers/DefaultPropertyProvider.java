@@ -2,64 +2,41 @@ package ru.yandex.qatools.properties.providers;
 
 import ru.yandex.qatools.properties.annotations.Resource;
 
-import java.lang.annotation.Annotation;
 import java.util.Properties;
 
 import static ru.yandex.qatools.properties.utils.PropertiesUtils.readProperties;
 
-
 /**
- * User: lanwen
- * Date: 17.07.13
- * Time: 17:28
+ * @author Dmitry Baev charlie@yandex-team.ru
+ *         Kirill Merkushev lanwen@yandex-team.ru
+ *         Date: 09.04.15
  */
-public class DefaultPropertyProvider implements PropertyProvider {
+public class DefaultPropertyProvider extends SystemPropertyProvider {
+
     @Override
-    public <T> Properties provide(T bean, Properties properties) {
+    public Properties provide(ClassLoader classLoader, Object bean) {
+        Properties properties = super.provide(classLoader, bean);
+
         Class<?> clazz = bean.getClass();
 
-        if (have(clazz, Resource.Classpath.class)) {
-            String[] paths = classpath(clazz, properties);
-            for (String path : paths) {
-                properties.putAll(readProperties(getClassLoader().getResourceAsStream(path)));
-            }
+        for (String path : classpath(clazz)) {
+            properties.putAll(readProperties(classLoader.getResourceAsStream(path)));
         }
 
-        if (have(clazz, Resource.File.class)) {
-            String[] paths = filepath(clazz, properties);
-            for (String path : paths) {
-                properties.putAll(readProperties(new java.io.File(path)));
-            }
+        for (String path : filepath(clazz)) {
+            properties.putAll(readProperties(new java.io.File(path)));
         }
 
-        properties.putAll(System.getProperties());
         return properties;
     }
 
-
-    protected boolean have(Class<?> clazz, Class<? extends Annotation> anno) {
-        return clazz.isAnnotationPresent(anno);
+    protected String[] filepath(Class<?> clazz) {
+        Resource.File annotation = clazz.getAnnotation(Resource.File.class);
+        return annotation == null ? new String[]{} : annotation.value();
     }
 
-    protected String[] filepath(Class<?> clazz, Properties properties) {
-        return clazz.getAnnotation(Resource.File.class).value();
-    }
-
-    protected String[] classpath(Class<?> clazz, Properties properties) {
-        return clazz.getAnnotation(Resource.Classpath.class).value();
-    }
-
-    private ClassLoader getClassLoader() {
-        ClassLoader classLoader = null;
-        try {
-            classLoader = Thread.currentThread().getContextClassLoader();
-        } catch (SecurityException ignored) {
-            // do nothing
-        } finally {
-            if (classLoader == null) {
-                classLoader = ClassLoader.getSystemClassLoader();
-            }
-        }
-        return classLoader;
+    protected String[] classpath(Class<?> clazz) {
+        Resource.Classpath annotation = clazz.getAnnotation(Resource.Classpath.class);
+        return annotation == null ? new String[]{} : annotation.value();
     }
 }

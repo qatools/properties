@@ -15,7 +15,9 @@ import ru.yandex.qatools.properties.annotations.Property;
 public class MultiFileProperty {
 
 	public MultiFileProperty() {
-		PropertyLoader.populate(this, loadProperties());
+		PropertyLoader.newInstance()
+				.withDefaults(loadProperties())
+				.populate(this);
 	}
 
 	@Property("property")

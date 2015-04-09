@@ -21,7 +21,9 @@ public class UnsupportedTypesTest {
     @Before
     public void initProperties() {
         override.setProperty("unsupported", "value");
-        PropertyLoader.populate(this, override);
+        PropertyLoader.newInstance()
+                .withDefaults(override)
+                .populate(this);
     }
 
 

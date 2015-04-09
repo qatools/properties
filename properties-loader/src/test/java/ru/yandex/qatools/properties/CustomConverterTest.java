@@ -3,6 +3,7 @@ package ru.yandex.qatools.properties;
 import org.junit.Before;
 import org.junit.Test;
 import ru.yandex.qatools.properties.testdata.PropertiesWithCustomConverter;
+import ru.yandex.qatools.properties.testdata.UpperCaseStringConverter;
 
 import java.util.Properties;
 
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertThat;
  */
 public class CustomConverterTest {
 
-    private final String VALUE = "value";
+    private static final String VALUE = "value";
 
     private PropertiesWithCustomConverter properties;
 
@@ -25,7 +26,10 @@ public class CustomConverterTest {
         override.setProperty("field", VALUE);
 
         properties = new PropertiesWithCustomConverter();
-        PropertyLoader.populate(properties, override);
+        PropertyLoader.newInstance()
+                .withDefaults(override)
+                .register(new UpperCaseStringConverter(), String.class)
+                .populate(properties);
     }
 
     @Test

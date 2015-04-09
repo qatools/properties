@@ -32,31 +32,31 @@ public class ProxyPropertiesFactory {
 
     public static ProxyProperties createProxyPropertiesWithSystemOverride() {
         ProxyProperties properties = new ProxyProperties();
-        PropertyLoader.populate(properties);
+        PropertyLoader.newInstance().populate(properties);
         return properties;
     }
 
     public static ProxyProperties createProxyPropertiesWithResourceAnnotation() {
         ProxyProperties properties = new ProxyPropertiesWithResourceAnnotation();
-        PropertyLoader.populate(properties);
+        PropertyLoader.newInstance().populate(properties);
         return properties;
     }
 
     public static ProxyProperties createProxyPropertiesWithFewResourceAnnotation() {
         ProxyProperties properties = new ProxyPropertiesWithFewResourceAnnotation();
-        PropertyLoader.populate(properties);
+        PropertyLoader.newInstance().populate(properties);
         return properties;
     }
 
     public static ProxyProperties createProxyPropertiesWithFileAnnotation() {
         ProxyProperties properties = new ProxyPropertiesWithFileAnnotation();
-        PropertyLoader.populate(properties);
+        PropertyLoader.newInstance().populate(properties);
         return properties;
     }
 
     public static ProxyProperties createProxyPropertiesWithFewFilesAnnotation() {
         ProxyProperties properties = new ProxyPropertiesWithFewFileAnnotation();
-        PropertyLoader.populate(properties);
+        PropertyLoader.newInstance().populate(properties);
         return properties;
     }
 }

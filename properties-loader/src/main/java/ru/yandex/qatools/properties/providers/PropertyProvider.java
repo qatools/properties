@@ -8,5 +8,6 @@ import java.util.Properties;
  * Time: 15:45
  */
 public interface PropertyProvider {
-    <T> Properties provide(T bean, Properties properties);
+
+    Properties provide(ClassLoader classLoader, Object bean);
 }

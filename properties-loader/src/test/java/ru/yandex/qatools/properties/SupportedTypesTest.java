@@ -95,10 +95,4 @@ public class SupportedTypesTest {
     public void charsetTypeShouldSupported() throws Exception {
         assertThat(properties.getCharset(), equalTo(Charset.forName(resource.getProperty("supported.charset"))));
     }
-
-    @Test
-    public void wrongCharsetShouldNotThrowAnException() throws Exception {
-        assertThat(properties.getInvalidCharset(), equalTo(null));
-    }
-
 }

@@ -3,22 +3,22 @@ package ru.yandex.qatools.properties.testdata;
 import ru.yandex.qatools.properties.PropertyLoader;
 import ru.yandex.qatools.properties.annotations.Property;
 import ru.yandex.qatools.properties.annotations.Resource;
-import ru.yandex.qatools.properties.annotations.With;
-import ru.yandex.qatools.properties.providers.MapOrSyspropPathReplacerProvider;
+import ru.yandex.qatools.properties.providers.MapPropPathReplacerProvider;
 
 import java.util.Properties;
 
 /**
  * @author artkoshelev
  */
-@Resource.Classpath("${system.file.name}.path.${map.scope.value}.properties")
-@With(MapOrSyspropPathReplacerProvider.class)
+@Resource.Classpath("${map.file.name}.path.${map.scope.value}.properties")
 public class UseMapOrSyspropReplacerProviderProperty {
 
     public UseMapOrSyspropReplacerProviderProperty(String scope) {
-        Properties map = new Properties();
+        Properties map = System.getProperties();
         map.put("scope.value", scope);
-        PropertyLoader.populate(this, map);
+        PropertyLoader.newInstance()
+                .withPropertyProvider(new MapPropPathReplacerProvider(map))
+                .populate(this);
     }
 
     @Property("property")

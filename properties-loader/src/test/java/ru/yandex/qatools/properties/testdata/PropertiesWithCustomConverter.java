@@ -1,11 +1,7 @@
 package ru.yandex.qatools.properties.testdata;
 
-import ru.yandex.qatools.properties.PropertyLoader;
 import ru.yandex.qatools.properties.annotations.Property;
 import ru.yandex.qatools.properties.annotations.Resource;
-import ru.yandex.qatools.properties.annotations.Use;
-
-import java.util.Properties;
 
 /**
  * @author Artem Eroshenko eroshenkoam
@@ -14,8 +10,7 @@ import java.util.Properties;
 @Resource.Classpath("${proeprty.load}.property")
 public class PropertiesWithCustomConverter {
 
-
     @Property("field")
-    @Use(UpperCaseStringConverter.class)
+//    @Use(UpperCaseStringConverter.class)
     public String field;
 }

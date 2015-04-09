@@ -17,7 +17,7 @@ public class AbsenceResourcePropertiesTest {
     @Test
     public void propertiesWithAbsenceResourceFileShouldBeSame() {
         String property = properties.getProperty();
-        PropertyLoader.populate(properties);
+        PropertyLoader.newInstance().populate(properties);
         assertThat("Properties after init absence file", property, equalTo(properties.getProperty()));
     }
 }
