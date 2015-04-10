@@ -147,7 +147,7 @@ public class PropertyLoader {
     }
 
     public PropertyLoader withFieldDecorator(FieldDecorator fieldDecorator) {
-        this.fieldDecorator = fieldDecorator;
+        setFieldDecorator(fieldDecorator);
         return this;
     }
 

@@ -5,8 +5,6 @@ import ru.qatools.properties.utils.PropertiesUtils;
 
 import java.util.Properties;
 
-import static ru.qatools.properties.utils.PropertiesUtils.readProperties;
-
 /**
  * @author Dmitry Baev charlie@yandex-team.ru
  *         Kirill Merkushev lanwen@yandex-team.ru
