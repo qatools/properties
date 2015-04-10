@@ -8,10 +8,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>properties-loader</artifactId>
-    <name>Yandex QATools Properties Loader</name>
+    <name>Properties Loader</name>
 
     <dependencies>
-
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -22,14 +21,5 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
-
-
 </project>
