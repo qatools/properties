@@ -162,6 +162,18 @@ public class PropertyLoader {
         }
     }
 
+    /**
+     * Register custom converter for given type.
+     */
+    public PropertyLoader register(Converter converter, Class<?> type) {
+        converters.register(converter, type);
+        return this;
+    }
+
+    public Properties getCompiled() {
+        return compiled;
+    }
+
     public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -243,14 +255,6 @@ public class PropertyLoader {
      */
     public PropertyLoader withPropertyProvider(PropertyProvider propertyProvider) {
         setPropertyProvider(propertyProvider);
-        return this;
-    }
-
-    /**
-     * Register custom converter for given type.
-     */
-    public PropertyLoader register(Converter converter, Class<?> type) {
-        converters.register(converter, type);
         return this;
     }
 
