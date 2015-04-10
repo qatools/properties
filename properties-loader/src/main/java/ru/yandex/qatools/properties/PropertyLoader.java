@@ -70,7 +70,7 @@ public class PropertyLoader {
         }
     }
 
-    private String getFieldKey(Field field) {
+    protected String getFieldKey(Field field) {
         String key = fieldDecorator.getFieldKey(field);
 
         if (key == null) {
@@ -81,7 +81,7 @@ public class PropertyLoader {
         return key;
     }
 
-    private String getFieldValue(String key) {
+    protected String getFieldValue(String key) {
         if (!cache.containsKey(key)) {
             String value = compiled.getProperty(key);
             cache.put(key, value);
@@ -90,7 +90,7 @@ public class PropertyLoader {
         return cache.get(key);
     }
 
-    private Object convertValueForField(Field field, String stringValue) {
+    protected Object convertValueForField(Field field, String stringValue) {
         Class<?> type = field.getType();
         try {
             return converters.convert(stringValue, type);
@@ -101,7 +101,7 @@ public class PropertyLoader {
         }
     }
 
-    private void setValueToField(Field field, Object bean, Object value) {
+    protected void setValueToField(Field field, Object bean, Object value) {
         try {
             field.setAccessible(true);
             field.set(bean, value);

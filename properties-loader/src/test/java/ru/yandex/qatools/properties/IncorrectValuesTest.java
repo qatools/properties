@@ -10,7 +10,7 @@ import ru.yandex.qatools.properties.testdata.ProxyPropertiesFactory;
  * @author Artem Eroshenko eroshenkoam
  *         3/6/13, 4:38 PM
  */
-public class IncorrectValuesOverridingTest {
+public class IncorrectValuesTest {
 
     @Before
     public void setupSystemProperties() {
@@ -18,7 +18,7 @@ public class IncorrectValuesOverridingTest {
     }
 
     @Test(expected = PropertyLoaderException.class)
-    public void checkIncorrectValueDontOverrideDefaultValue() {
+    public void checkIncorrectValueOccursTheException() {
         ProxyPropertiesFactory.createProxyPropertiesWithSystemOverride();
     }
 
