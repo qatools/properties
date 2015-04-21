@@ -10,7 +10,7 @@ This library provides convinient way to work with properties. Using power of [Ap
 Latest stable version:
 ```xml
 <dependency>
-    <groupId>ru.qatools.properties</groupId>
+    <groupId>ru.qatools.commons</groupId>
     <artifactId>properties</artifactId>
     <version>${LATEST_VERSION}</version>
 </dependency>
