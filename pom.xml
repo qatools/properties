@@ -14,8 +14,8 @@
     <version>2.0-SNAPSHOT</version>
 
     <organization>
-        <name>Yandex</name>
-        <url>http://company.yandex.com</url>
+        <name>QATools</name>
+        <url>http://www.qatools.ru</url>
     </organization>
 
     <licenses>
@@ -35,13 +35,13 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/yandex-qatools/properties/issues</url>
+        <url>https://github.com/qatools/properties/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/yandex-qatools/properties</url>
-        <connection>scm:git:git@github.com:yandex-qatools/properties.git</connection>
-        <developerConnection>scm:git:git@github.com:yandex-qatools/properties.git</developerConnection>
+        <url>https://github.com/qatools/properties</url>
+        <connection>scm:git:git@github.com:qatools/properties.git</connection>
+        <developerConnection>scm:git:git@github.com:qatools/properties.git</developerConnection>
     </scm>
 
     <developers>
