@@ -10,8 +10,8 @@ This library provides convinient way to work with properties. Using power of [Ap
 Latest stable version:
 ```xml
 <dependency>
-    <groupId>ru.yandex.qatools.properties</groupId>
-    <artifactId>properties-loader</artifactId>
+    <groupId>ru.qatools.properties</groupId>
+    <artifactId>properties</artifactId>
     <version>${LATEST_VERSION}</version>
 </dependency>
 ```
