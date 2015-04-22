@@ -26,7 +26,7 @@
         </license>
     </licenses>
 
-    <name>QATools Properties</name>
+    <name>Commons Properties</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
