@@ -28,7 +28,7 @@ The complete start guide can be found on [wiki](https://github.com/yandex-qatool
 public class ProxyProperties {
 
     public ProxyProperties() {
-        PropertyLoader.populate(this); 
+        PropertyLoader.newInstance().populate(this); 
     }
 
     @Property("proxy.host") // key of property witch you want to handle
@@ -58,5 +58,5 @@ String host = new ProxyProperties().getHost();
 
 It's easy to override value from system properties. E.g. when you run your code with `-Dproxy.host=ya.ru` it overrides the default value in properties file.
 
-More about [Properties Priorities](https://github.com/yandex-qatools/properties/wiki/Properties-Priorities), [Conversion-Data-Types](https://github.com/yandex-qatools/properties/wiki/Conversion-Data-Types) can be foud on wiki
+More about [Priorities](http://confluence.qatools.ru/display/COMMONS/Properties).
 
