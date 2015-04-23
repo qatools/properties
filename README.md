@@ -18,32 +18,47 @@ Latest stable version:
 
 # Getting Started
 
-### Property Class Creation
+### Property class
 
 ```java
-// default values in resources/proxy.properties (or if not found, used values from resources/proxy.bak.properties)
-@Resource.Classpath({"proxy.properties", "proxy.bak.properties"})
+@Resource.Classpath("proxy.properties")
 public class ProxyProperties {
-
+ 
     public ProxyProperties() {
-        PropertyLoader.newInstance().populate(this); 
+        PropertyLoader.newInstance().populate(this);
     }
-
-    @Property("proxy.host") // key of property witch you want to handle
+ 
+    @Property("proxy.host")
     private String host;
-
+ 
+    @Property("proxy.port")
+    private int port;
+ 
+    @Property("proxy.active")
+    private boolean active;
+ 
     public String getHost() {
         return host;
+    }
+ 
+    public int getPort() {
+        return port;
+    }
+ 
+    public boolean isActive() {
+        return active;
     }
 }
 ```
 
-### Property File Creation
+### Property file
 
 Put in your resources directory (mainly it `src/main/resources`) file `proxy.properties`
 
 ```properties
 proxy.host=proxy.yandex.ru
+proxy.port=3133
+proxy.use=false
 ```
 
 ### Usage
@@ -57,4 +72,3 @@ String host = new ProxyProperties().getHost();
 It's easy to override value from system properties. E.g. when you run your code with `-Dproxy.host=ya.ru` it overrides the default value in properties file.
 
 The complete start guide can be found on [wiki](http://wiki.qatools.ru/display/COMMONS/Properties).
-
