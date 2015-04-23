@@ -18,8 +18,6 @@ Latest stable version:
 
 # Getting Started
 
-The complete start guide can be found on [wiki](https://github.com/yandex-qatools/properties/wiki/Start-Guide)
-
 ### Property Class Creation
 
 ```java
@@ -58,5 +56,5 @@ String host = new ProxyProperties().getHost();
 
 It's easy to override value from system properties. E.g. when you run your code with `-Dproxy.host=ya.ru` it overrides the default value in properties file.
 
-More about [Priorities](http://confluence.qatools.ru/display/COMMONS/Properties).
+The complete start guide can be found on [wiki](http://wiki.qatools.ru/display/COMMONS/Properties).
 
