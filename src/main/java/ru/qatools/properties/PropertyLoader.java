@@ -2,6 +2,7 @@ package ru.qatools.properties;
 
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
+import ru.qatools.properties.annotations.Use;
 import ru.qatools.properties.converters.CharsetConverter;
 import ru.qatools.properties.converters.URIConverter;
 import ru.qatools.properties.decorators.DefaultFieldDecorator;
@@ -136,11 +137,41 @@ public class PropertyLoader {
     protected Object convertValueForField(Field field, String stringValue) {
         Class<?> type = field.getType();
         try {
-            return converters.convert(stringValue, type);
+            return field.isAnnotationPresent(Use.class) ?
+                    getValueForFieldWithUseAnnotation(field, stringValue) :
+                    converters.convert(stringValue, type);
         } catch (Exception e) {
             throw new PropertyLoaderException(String.format(
                     "Can't convert value <%s> to type <%s> for field <%s>", stringValue, type, field.getName()
             ), e);
+        }
+    }
+
+    /**
+     * Convert given value to field type using converter specified in {@link Use} annotation.
+     * @param field given field with {@link Use} annotation.
+     * @param stringValue value to convert.
+     */
+    protected Object getValueForFieldWithUseAnnotation(Field field, String stringValue) {
+        Converter converter = getConverterForFieldWithUseAnnotation(field);
+        Class<?> type = field.getType();
+        return converter.convert(type, stringValue);
+    }
+
+    /**
+     * Returns new instance of converter specified in {@link Use} annotation for
+     * given field.
+     *
+     * @param field given field with {@link Use} annotation.
+     */
+    protected Converter getConverterForFieldWithUseAnnotation(Field field) {
+        Class<? extends Converter> clazz = field.getAnnotation(Use.class).value();
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new PropertyLoaderException(String.format(
+                    "Can't instance converter <%s> for field <%s>",
+                    clazz, field.getName()), e);
         }
     }
 
