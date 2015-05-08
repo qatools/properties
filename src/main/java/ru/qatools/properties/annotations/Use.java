@@ -1,6 +1,6 @@
 package ru.qatools.properties.annotations;
 
-import org.apache.commons.beanutils.Converter;
+import ru.qatools.properties.converters.Converter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

@@ -2,11 +2,9 @@ package ru.qatools.properties;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.qatools.properties.testdata.LowerCaseStringConverter;
 import ru.qatools.properties.testdata.PropertiesWithCustomConverter;
-import ru.qatools.properties.testdata.UpperCaseStringConverter;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -18,33 +16,30 @@ import static org.junit.Assert.assertThat;
  */
 public class CustomConverterTest {
 
-    private static final String VALUE_FOR_FIELD = "value";
-
-    private static final String VALUE_FOR_FIELD_WITH_USE = "first, second";
+    private static final String VALUE = "Value";
 
     private PropertiesWithCustomConverter properties;
 
     @Before
     public void initProperties() {
         Properties override = new Properties();
-        override.setProperty("field", VALUE_FOR_FIELD);
-        override.setProperty("field.with.use.annotation", VALUE_FOR_FIELD_WITH_USE);
+        override.setProperty("field", VALUE);
+        override.setProperty("field.with.use.annotation", VALUE);
 
         properties = new PropertiesWithCustomConverter();
         PropertyLoader.newInstance()
                 .withDefaults(override)
-                .register(new UpperCaseStringConverter(), String.class)
+                .register(new LowerCaseStringConverter(), String.class)
                 .populate(properties);
     }
 
     @Test
     public void testFieldWithOverriddenDefaultConverter() {
-        assertThat(properties.field, equalTo(VALUE_FOR_FIELD.toUpperCase()));
+        assertThat(properties.field, equalTo(VALUE.toLowerCase()));
     }
 
     @Test
     public void testFieldWithOverriddenConverterInUseAnnotation() {
-        List<String> expected = Arrays.asList(VALUE_FOR_FIELD_WITH_USE.split(", "));
-        assertThat(properties.fieldWithUseAnnotation, equalTo(expected));
+        assertThat(properties.fieldWithUseAnnotation, equalTo(VALUE.toUpperCase()));
     }
 }

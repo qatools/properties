@@ -1,10 +1,8 @@
 package ru.qatools.properties;
 
-import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.beanutils.Converter;
 import ru.qatools.properties.annotations.Use;
-import ru.qatools.properties.converters.CharsetConverter;
-import ru.qatools.properties.converters.URIConverter;
+import ru.qatools.properties.converters.Converter;
+import ru.qatools.properties.converters.ConverterManager;
 import ru.qatools.properties.decorators.DefaultFieldDecorator;
 import ru.qatools.properties.decorators.FieldDecorator;
 import ru.qatools.properties.exeptions.PropertyLoaderException;
@@ -12,8 +10,6 @@ import ru.qatools.properties.providers.DefaultPropertyProvider;
 import ru.qatools.properties.providers.PropertyProvider;
 
 import java.lang.reflect.Field;
-import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -37,7 +33,7 @@ public class PropertyLoader {
 
     protected Map<String, String> cache = new HashMap<>();
 
-    protected final ConvertUtilsBean converters = new ExtendedConvertUtilsBean();
+    protected final ConverterManager manager = new ConverterManager();
 
     /**
      * Do not instance this class by yourself. Use {@link #newInstance()} instead.
@@ -139,7 +135,7 @@ public class PropertyLoader {
         try {
             return field.isAnnotationPresent(Use.class) ?
                     getValueForFieldWithUseAnnotation(field, stringValue) :
-                    converters.convert(stringValue, type);
+                    manager.convert(type, stringValue);
         } catch (Exception e) {
             throw new PropertyLoaderException(String.format(
                     "Can't convert value <%s> to type <%s> for field <%s>", stringValue, type, field.getName()
@@ -149,13 +145,13 @@ public class PropertyLoader {
 
     /**
      * Convert given value to field type using converter specified in {@link Use} annotation.
-     * @param field given field with {@link Use} annotation.
+     *
+     * @param field       given field with {@link Use} annotation.
      * @param stringValue value to convert.
      */
-    protected Object getValueForFieldWithUseAnnotation(Field field, String stringValue) {
+    protected Object getValueForFieldWithUseAnnotation(Field field, String stringValue) throws Exception {
         Converter converter = getConverterForFieldWithUseAnnotation(field);
-        Class<?> type = field.getType();
-        return converter.convert(type, stringValue);
+        return converter.convert(stringValue);
     }
 
     /**
@@ -196,8 +192,8 @@ public class PropertyLoader {
     /**
      * Register custom converter for given type.
      */
-    public PropertyLoader register(Converter converter, Class<?> type) {
-        converters.register(converter, type);
+    public <T> PropertyLoader register(Converter<T> converter, Class<T> type) {
+        manager.register(type, converter);
         return this;
     }
 
@@ -294,37 +290,5 @@ public class PropertyLoader {
      */
     public static PropertyLoader newInstance() {
         return new PropertyLoader();
-    }
-
-    /**
-     * Using this class you can convert {@link Enum} (enums doen't supported for
-     * {@link ConvertUtilsBean} by default, you should register enum converter for
-     * each concrete class), {@link Charset} and {@link URI}
-     */
-    protected static class ExtendedConvertUtilsBean extends ConvertUtilsBean {
-
-        /**
-         * Register all standard converters and few more. Also configure
-         * exception policy (will throw a convert exception if some convert
-         * exception occurs)
-         */
-        public ExtendedConvertUtilsBean() {
-            super();
-            register(true, true, 0);
-            register(new CharsetConverter(), Charset.class);
-            register(new URIConverter(), URI.class);
-        }
-
-        /**
-         * Hack for enums
-         */
-        @Override
-        public Object convert(String value, Class clazz) {
-            if (clazz.isEnum()) {
-                return Enum.valueOf(clazz, value.toUpperCase().trim());
-            } else {
-                return super.convert(value, clazz);
-            }
-        }
     }
 }

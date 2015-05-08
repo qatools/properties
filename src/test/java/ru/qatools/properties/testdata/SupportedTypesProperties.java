@@ -27,6 +27,9 @@ public class SupportedTypesProperties {
     @Property("supported.int")
     private int aInt;
 
+    @Property("supported.int.array")
+    private int[] anIntArray;
+
     @Property("supported.byte")
     private byte aByte;
 

@@ -14,7 +14,7 @@ public class PropertiesWithCustomConverter {
     @Property("field")
     public String field;
 
-    @Use(CommaSeparatedStringConverter.class)
+    @Use(UpperCaseStringConverter.class)
     @Property("field.with.use.annotation")
-    public List<String> fieldWithUseAnnotation;
+    public String fieldWithUseAnnotation;
 }
