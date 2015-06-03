@@ -5,11 +5,15 @@ import ru.qatools.properties.converters.Converter;
 import ru.qatools.properties.converters.ConverterManager;
 import ru.qatools.properties.decorators.DefaultFieldDecorator;
 import ru.qatools.properties.decorators.FieldDecorator;
+import ru.qatools.properties.exeptions.ConversionException;
 import ru.qatools.properties.exeptions.PropertyLoaderException;
 import ru.qatools.properties.providers.DefaultPropertyProvider;
 import ru.qatools.properties.providers.PropertyProvider;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -131,16 +135,55 @@ public class PropertyLoader {
      * @throws PropertyLoaderException if any problems occurs during type conversion
      */
     protected Object convertValueForField(Field field, String stringValue) {
-        Class<?> type = field.getType();
         try {
             return field.isAnnotationPresent(Use.class) ?
                     getValueForFieldWithUseAnnotation(field, stringValue) :
-                    manager.convert(type, stringValue);
+                    getValueForField(field, stringValue);
         } catch (Exception e) {
             throw new PropertyLoaderException(String.format(
-                    "Can't convert value <%s> to type <%s> for field <%s>", stringValue, type, field.getName()
-            ), e);
+                    "Can't convert value <%s> to type <%s> for field <%s>",
+                    stringValue, field.getType(), field.getName()), e);
         }
+    }
+
+    /**
+     * Convert given value to field type.
+     *
+     * @param field       given field with {@link Use} annotation.
+     * @param stringValue value to convert.
+     */
+    protected Object getValueForField(Field field, String stringValue) throws Exception {
+        Class<?> type = field.getType();
+
+        if (Collection.class.isAssignableFrom(type)) {
+            return manager.convert(type, getCollectionElementType(field), stringValue);
+        }
+
+        return manager.convert(type, stringValue);
+    }
+
+    /**
+     * Get collection element type for given field. Given field type should
+     * be assignable from {@link Collection}. For collections without
+     * generic returns {@link String}.
+     */
+    protected Class<?> getCollectionElementType(Field field) throws ConversionException {
+        Type genericType = field.getGenericType();
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            if (typeArguments.length != 1) {
+                throw new ConversionException("Types with more then one generic are not supported");
+            }
+
+            Type type = typeArguments[0];
+            if (type instanceof Class) {
+                return (Class<?>) type;
+            }
+
+            throw new ConversionException(String.format("Could not resolve generic type <%s>", type));
+        }
+        return String.class;
     }
 
     /**
