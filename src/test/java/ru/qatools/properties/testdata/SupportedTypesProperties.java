@@ -7,6 +7,10 @@ import ru.qatools.properties.annotations.Resource;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Artem Eroshenko eroshenkoam
@@ -16,107 +20,76 @@ import java.nio.charset.Charset;
 public class SupportedTypesProperties {
 
     @Property("supported.double")
-    private double aDouble;
+    public double aDouble;
 
     @Property("supported.float")
-    private float aFloat;
+    public float aFloat;
 
     @Property("supported.short")
-    private short aShort;
+    public short aShort;
 
     @Property("supported.int")
-    private int aInt;
+    public int anInt;
 
     @Property("supported.int.array")
-    private int[] anIntArray;
+    public int[] intArray;
 
     @Property("supported.byte")
-    private byte aByte;
+    public byte aByte;
 
     @Property("supported.string")
-    private String aString;
+    public String string;
 
     @Property("supported.boolean")
-    private boolean aBoolean;
+    public boolean aBoolean;
 
     @Property("supported.long")
-    private long aLong;
+    public long aLong;
 
     @Property("supported.char")
-    private char aChar;
+    public char aChar;
 
     @Property("supported.url")
-    private URL aURL;
+    public URL url;
 
     @Property("supported.uri")
-    private URI aURI;
+    public URI uri;
 
     @Property("supported.enum")
-    private PropEnum anEnum;
+    public PropEnum anEnum;
 
     @Property("supported.charset")
-    private Charset aCharset;
+    public Charset charset;
 
-    @Property("supported.invalid.charset")
-    private Charset anInvalidCharset;
+    @Property("supported.collection")
+    public Collection<String> collection;
+
+    @Property("supported.collection")
+    public Collection collectionWithoutGeneric;
+
+    @Property("supported.collection")
+    public List listWithoutGeneric;
+
+    @Property("supported.collection")
+    public List<String> stringList;
+
+    @Property("supported.collection")
+    public Set<String> stringSet;
+
+    @Property("supported.collection")
+    public HashSet<String> stringHashSet;
+
+    @Property("supported.collection")
+    public MySet<String> stringCustomSet;
 
     public SupportedTypesProperties() {
         PropertyLoader.newInstance().populate(this);
     }
 
-    public double getDouble() {
-        return aDouble;
+    public static class MySet<T> extends HashSet<T> {
+        public MySet(Collection<? extends T> c) {
+            super(c);
+        }
     }
 
-    public float getFloat() {
-        return aFloat;
-    }
-
-    public short getShort() {
-        return aShort;
-    }
-
-    public int getInt() {
-        return aInt;
-    }
-
-    public long getLong() {
-        return aLong;
-    }
-
-    public byte getByte() {
-        return aByte;
-    }
-
-    public boolean getBoolean() {
-        return aBoolean;
-    }
-
-    public String getString() {
-        return aString;
-    }
-
-    public char getChar() {
-        return aChar;
-    }
-
-    public URL getURL() {
-        return aURL;
-    }
-
-    public URI getURI() {
-        return aURI;
-    }
-
-    public PropEnum getEnum() {
-        return anEnum;
-    }
-
-    public Charset getCharset() {
-        return aCharset;
-    }
-
-    public Charset getInvalidCharset() {
-        return anInvalidCharset;
-    }
 }

@@ -1,5 +1,6 @@
 package ru.qatools.properties;
 
+import org.hamcrest.Matcher;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.qatools.properties.testdata.SupportedTypesProperties;
@@ -9,8 +10,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static ru.qatools.properties.testdata.PropEnum.valueOf;
 
 /**
@@ -32,67 +35,106 @@ public class SupportedTypesTest {
 
     @Test
     public void booleanTypeShouldSupported() {
-        assertThat(properties.getBoolean(), equalTo(Boolean.parseBoolean(resource.getProperty("supported.boolean"))));
+        assertThat(properties.aBoolean, equalTo(Boolean.parseBoolean(resource.getProperty("supported.boolean"))));
     }
 
     @Test
     public void byteTypeShouldSupported() {
-        assertThat(properties.getByte(), equalTo(Byte.parseByte(resource.getProperty("supported.byte"))));
+        assertThat(properties.aByte, equalTo(Byte.parseByte(resource.getProperty("supported.byte"))));
     }
 
     @Test
     public void charTypeShouldSupported() {
-        assertThat(properties.getChar(), equalTo((resource.getProperty("supported.char").charAt(0))));
+        assertThat(properties.aChar, equalTo((resource.getProperty("supported.char").charAt(0))));
     }
 
     @Test
     public void shortTypeShouldSupported() {
-        assertThat(properties.getShort(), equalTo(Short.parseShort(resource.getProperty("supported.short"))));
+        assertThat(properties.aShort, equalTo(Short.parseShort(resource.getProperty("supported.short"))));
     }
 
     @Test
     public void intTypeShouldSupported() {
-        assertThat(properties.getInt(), equalTo(Integer.parseInt(resource.getProperty("supported.int"))));
+        assertThat(properties.anInt, equalTo(Integer.parseInt(resource.getProperty("supported.int"))));
     }
 
     @Test
     public void longTypeShouldSupported() {
-        assertThat(properties.getLong(), equalTo(Long.parseLong(resource.getProperty("supported.long"))));
+        assertThat(properties.aLong, equalTo(Long.parseLong(resource.getProperty("supported.long"))));
     }
 
     @Test
     public void floatTypeShouldSupported() {
-        assertThat(properties.getFloat(), equalTo(Float.parseFloat(resource.getProperty("supported.float"))));
+        assertThat(properties.aFloat, equalTo(Float.parseFloat(resource.getProperty("supported.float"))));
     }
 
     @Test
     public void doubleTypeShouldSupported() {
-        assertThat(properties.getDouble(), equalTo(Double.parseDouble(resource.getProperty("supported.double"))));
+        assertThat(properties.aDouble, equalTo(Double.parseDouble(resource.getProperty("supported.double"))));
     }
 
     @Test
     public void stringTypeShouldSupported() {
-        assertThat(properties.getString(), equalTo(resource.getProperty("supported.string")));
+        assertThat(properties.string, equalTo(resource.getProperty("supported.string")));
     }
 
     @Test
     public void urlTypeShouldSupported() throws Exception {
-        assertThat(properties.getURL(), equalTo(new URL(resource.getProperty("supported.url"))));
+        assertThat(properties.url, equalTo(new URL(resource.getProperty("supported.url"))));
     }
 
     @Test
     public void uriTypeShouldSupported() throws Exception {
-        assertThat(properties.getURI(), equalTo(URI.create(resource.getProperty("supported.uri"))));
+        assertThat(properties.uri, equalTo(URI.create(resource.getProperty("supported.uri"))));
     }
 
 
     @Test
     public void enumTypeShouldSupported() throws Exception {
-        assertThat(properties.getEnum(), equalTo(valueOf(resource.getProperty("supported.enum").toUpperCase().trim())));
+        assertThat(properties.anEnum, equalTo(valueOf(resource.getProperty("supported.enum").toUpperCase().trim())));
     }
 
     @Test
     public void charsetTypeShouldSupported() throws Exception {
-        assertThat(properties.getCharset(), equalTo(Charset.forName(resource.getProperty("supported.charset"))));
+        assertThat(properties.charset, equalTo(Charset.forName(resource.getProperty("supported.charset"))));
+    }
+
+    @Test
+    public void shouldSupportCollectionsWithGenerics() throws Exception {
+        assertThat(properties.collection, hasItems(getExpectedStrings()));
+    }
+
+    @Test
+    public void shouldSupportCollectionsWithoutGenerics() throws Exception {
+        assertThat(properties.collectionWithoutGeneric, (Matcher) hasItems(getExpectedStrings()));
+    }
+
+    @Test
+    public void shouldSupportListWithoutGenerics() throws Exception {
+        assertThat(properties.listWithoutGeneric, (Matcher) hasItems(getExpectedStrings()));
+    }
+
+    @Test
+    public void shouldSupportList() throws Exception {
+        assertThat(properties.stringList, (Matcher) hasItems(getExpectedStrings()));
+    }
+
+    @Test
+    public void shouldSupportSet() throws Exception {
+        assertThat(properties.stringSet, (Matcher) hasItems(getExpectedStrings()));
+    }
+
+    @Test
+    public void shouldSupportHashSet() throws Exception {
+        assertThat(properties.stringHashSet, (Matcher) hasItems(getExpectedStrings()));
+    }
+
+    @Test
+    public void shouldSupportCustomCollection() throws Exception {
+        assertThat(properties.stringCustomSet, (Matcher) hasItems(getExpectedStrings()));
+    }
+
+    private String[] getExpectedStrings() {
+        return resource.getProperty("supported.collection").split(",");
     }
 }

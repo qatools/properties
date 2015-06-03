@@ -3,11 +3,18 @@ package ru.qatools.properties.converters;
 import ru.qatools.properties.exeptions.ConversionException;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class can help you convert some values from string representation.
@@ -94,9 +101,13 @@ public class ConverterManager {
     /**
      * Find converter for given type. Returns null if converter doesn't exists.
      */
-    public <T> Converter<T> find(Class<T> type) {
+    protected <T> Converter<T> find(Class<T> type) throws ConversionException {
         //noinspection unchecked
-        return (Converter<T>) storage.get(type);
+        Converter<T> converter = (Converter<T>) storage.get(type);
+        if (converter == null) {
+            throw new ConversionException(String.format("Could not find converter for type <%s>", type));
+        }
+        return converter;
     }
 
     /**
@@ -105,20 +116,70 @@ public class ConverterManager {
      * @throws ConversionException If can't find converter for given type.
      * @see #find(Class)
      */
-    public Object convert(Class type, String origin) throws ConversionException {
+    public Object convert(Class<?> type, String origin) throws ConversionException {
         if (type.isEnum()) {
-            return Enum.valueOf(type, origin.toUpperCase().trim());
+            return Enum.valueOf((Class) type, origin.toUpperCase().trim());
+        }
+
+        if (Collection.class.isAssignableFrom(type)) {
+            throw new ConversionException("Collections doesn't supported yet");
         }
 
         Converter converter = find(type);
-        if (converter == null) {
-            throw new ConversionException(String.format("Could not find converter for type <%s>", type));
-        }
 
         try {
             return converter.convert(origin);
         } catch (Exception e) {
             throw new ConversionException(String.format("Could not convert string <%s> to type <%s>", origin, type), e);
+        }
+    }
+
+    /**
+     * Convert given string to specified collection with given element type.
+     *
+     * @throws ConversionException If any occurs.
+     * @see #find(Class)
+     */
+    public <T> Object convert(Class collectionType, Class<T> elementType, String origin) throws ConversionException {
+        Converter<T> elementConverter = find(elementType);
+        CollectionConverter<T> converter = new CollectionConverter<>(elementConverter, stringSplitter);
+
+        try {
+            Collection<T> converted = converter.convert(origin);
+            return castCollectionToType(collectionType, converted);
+        } catch (Exception e) {
+            throw new ConversionException(String.format("Could not convert string <%s> to collection <%s> " +
+                    "with element type <%s>", origin, collectionType, elementType), e);
+        }
+    }
+
+    /**
+     * Create an instance of specified collection with given element type.
+     */
+
+    @SuppressWarnings("unchecked")
+    protected <T> Collection<T> castCollectionToType(Class collectionType, Collection<T> converted) throws ConversionException {
+        if (!Collection.class.isAssignableFrom(collectionType)) {
+            throw new ConversionException("Collection type should extends collection" + collectionType);
+        }
+
+        if (collectionType.isInterface()) {
+            if (collectionType.isAssignableFrom(Set.class)) {
+                return Collections.unmodifiableSet(new HashSet<>(converted));
+            }
+            if (collectionType.isAssignableFrom(List.class)) {
+                return Collections.unmodifiableList(new LinkedList<>(converted));
+            }
+            if (collectionType.isAssignableFrom(Collection.class)) {
+                return Collections.unmodifiableCollection(converted);
+            }
+            throw new ConversionException("Unsupported collection type " + collectionType);
+        }
+        try {
+            Constructor constructor = collectionType.getConstructor(Collection.class);
+            return (Collection<T>) constructor.newInstance(converted);
+        } catch (Exception e) {
+            throw new ConversionException("Could not create an instance of " + collectionType, e);
         }
     }
 }
