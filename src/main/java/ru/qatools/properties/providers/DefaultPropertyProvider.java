@@ -1,6 +1,6 @@
 package ru.qatools.properties.providers;
 
-import ru.qatools.properties.annotations.Resource;
+import ru.qatools.properties.Resource;
 import ru.qatools.properties.utils.PropertiesUtils;
 
 import java.util.Properties;
@@ -13,19 +13,18 @@ import java.util.Properties;
 public class DefaultPropertyProvider extends SystemPropertyProvider {
 
     @Override
-    public Properties provide(ClassLoader classLoader, Object bean) {
-        Properties properties = super.provide(classLoader, bean);
+    public Properties provide(ClassLoader classLoader, Class<?> beanClass) {
+        Properties properties = new Properties();
 
-        Class<?> clazz = bean.getClass();
-
-        for (String path : classpath(clazz)) {
+        for (String path : classpath(beanClass)) {
             properties.putAll(PropertiesUtils.readProperties(classLoader.getResourceAsStream(path)));
         }
 
-        for (String path : filepath(clazz)) {
+        for (String path : filepath(beanClass)) {
             properties.putAll(PropertiesUtils.readProperties(new java.io.File(path)));
         }
 
+        properties.putAll(super.provide(classLoader, beanClass));
         return properties;
     }
 

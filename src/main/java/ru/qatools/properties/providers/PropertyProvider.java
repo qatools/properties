@@ -9,5 +9,5 @@ import java.util.Properties;
  */
 public interface PropertyProvider {
 
-    Properties provide(ClassLoader classLoader, Object bean);
+    Properties provide(ClassLoader classLoader, Class<?> beanClass);
 }

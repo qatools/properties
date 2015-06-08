@@ -9,7 +9,7 @@ import java.util.Properties;
 public class SystemPropertyProvider implements PropertyProvider {
 
     @Override
-    public Properties provide(ClassLoader classLoader, Object bean) {
+    public Properties provide(ClassLoader classLoader, Class<?> beanClass) {
         return System.getProperties();
     }
 }

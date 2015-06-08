@@ -1,7 +1,8 @@
-package ru.qatools.properties.annotations;
+package ru.qatools.properties;
 
 import ru.qatools.properties.converters.Converter;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -13,7 +14,7 @@ import java.lang.annotation.Target;
  *         Date: 05.05.15
  */
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@Target({java.lang.annotation.ElementType.FIELD})
+@Target({java.lang.annotation.ElementType.FIELD, ElementType.METHOD})
 public @interface Use {
 
     Class<? extends Converter> value();

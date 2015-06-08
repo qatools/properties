@@ -1,22 +1,26 @@
 package ru.qatools.properties;
 
-import ru.qatools.properties.annotations.Use;
+import ru.qatools.properties.converters.ConversionException;
 import ru.qatools.properties.converters.Converter;
 import ru.qatools.properties.converters.ConverterManager;
-import ru.qatools.properties.decorators.DefaultFieldDecorator;
-import ru.qatools.properties.decorators.FieldDecorator;
-import ru.qatools.properties.exeptions.ConversionException;
-import ru.qatools.properties.exeptions.PropertyLoaderException;
+import ru.qatools.properties.internal.PropertiesProxy;
+import ru.qatools.properties.internal.PropertyInfo;
 import ru.qatools.properties.providers.DefaultPropertyProvider;
 import ru.qatools.properties.providers.PropertyProvider;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Dmitry Baev charlie@yandex-team.ru
@@ -31,11 +35,7 @@ public class PropertyLoader {
 
     protected Properties compiled = new Properties();
 
-    protected FieldDecorator fieldDecorator = new DefaultFieldDecorator();
-
     protected PropertyProvider propertyProvider = new DefaultPropertyProvider();
-
-    protected Map<String, String> cache = new HashMap<>();
 
     protected final ConverterManager manager = new ConverterManager();
 
@@ -47,128 +47,232 @@ public class PropertyLoader {
 
     /**
      * Populate given bean using properties from {@link #defaults} and
-     * {@link PropertyProvider#provide(ClassLoader, Object)}
-     *
-     * @see #initFields(Object)
-     * @see PropertyProvider
+     * {@link PropertyProvider#provide(ClassLoader, Class)}
      */
     public void populate(Object bean) {
-        compiled.putAll(defaults);
-        compiled.putAll(propertyProvider.provide(classLoader, bean));
+        Objects.requireNonNull(bean);
+        compileProperties(bean.getClass());
 
-        initFields(bean);
-    }
-
-    /**
-     * Init all fields declared in class (and all superclasses) of given bean.
-     *
-     * @see #initFields(Object, Field[])
-     */
-    protected void initFields(Object bean) {
         Class<?> clazz = bean.getClass();
+
         while (clazz != Object.class) {
-            initFields(bean, clazz.getDeclaredFields());
+            Map<Field, PropertyInfo> propertyInfoMap = resolveProperties(clazz.getDeclaredFields());
+
+            for (Field field : propertyInfoMap.keySet()) {
+                PropertyInfo info = propertyInfoMap.get(field);
+                setValueToField(field, bean, info.getValue());
+            }
             clazz = clazz.getSuperclass();
         }
     }
 
+    public <T> T populate(Class<T> clazz) {
+        Objects.requireNonNull(clazz);
+        compileProperties(clazz);
+
+        Set<Class> resolvedConfigs = new HashSet<>();
+        resolvedConfigs.add(clazz);
+        return populate(clazz, resolvedConfigs);
+    }
+
     /**
-     * Init specified fields for given bean. For each field will the key
-     * {@link #getFieldKey(Field)}. This key will be used to find string representation
-     * of value {@link #getFieldValue(String)} and then converted to field type
-     * {@link #convertValueForField(Field, String)} and finally set to field
-     * {@link #setValueToField(Field, Object, Object)}. If can't find value for
-     * field key ({@link #getFieldValue(String)} returns <code>null</code>) then
-     * this field was skipped.
-     *
-     * @see #getFieldKey(Field)
-     * @see #getFieldValue(String)
-     * @see #convertValueForField(Field, String)
-     * @see #setValueToField(Field, Object, Object)
+     * Shortcut for {@link #populate(String, Class, Set)}.
      */
-    protected void initFields(Object bean, Field[] fields) {
-        for (Field field : fields) {
-            if (fieldDecorator.shouldDecorate(field)) {
-                String key = getFieldKey(field);
-                String stringValue = getFieldValue(key);
+    public <T> T populate(Class<T> clazz, Set<Class> resolvedConfigs) {
+        return populate(null, clazz, resolvedConfigs);
+    }
+
+    /**
+     * Creates a proxy instance of given configuration.
+     */
+    public <T> T populate(String prefix, Class<T> clazz, Set<Class> resolvedConfigs) {
+        checkConfigurationClass(clazz);
+
+        Map<Method, PropertyInfo> properties = new HashMap<>();
+        properties.putAll(resolveProperties(prefix, clazz.getMethods()));
+        properties.putAll(resolveConfigs(clazz.getMethods(), resolvedConfigs));
+
+        //noinspection unchecked
+        return (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{clazz},
+                new PropertiesProxy(properties));
+    }
+
+    /**
+     * Set given value to specified field of given object.
+     *
+     * @throws PropertyLoaderException if some exceptions occurs during reflection calls.
+     * @see Field#setAccessible(boolean)
+     * @see Field#set(Object, Object)
+     */
+    protected void setValueToField(Field field, Object bean, Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(bean, value);
+        } catch (Exception e) {
+            throw new PropertyLoaderException(
+                    String.format("Can not set bean <%s> field <%s> value", bean, field), e
+            );
+        }
+    }
+
+    /**
+     * Check that given class is interface.
+     */
+    protected void checkConfigurationClass(Class<?> clazz) {
+        if (!clazz.isInterface()) {
+            throw new PropertyLoaderException(clazz + " is not an interface");
+        }
+    }
+
+    /**
+     * Compile properties to {@link #compiled} field.
+     */
+    protected void compileProperties(Class<?> clazz) {
+        compiled.putAll(defaults);
+        compiled.putAll(propertyProvider.provide(classLoader, clazz));
+    }
+
+    /**
+     * Shortcut for {@link #resolveProperties(String, AnnotatedElement[])}.
+     */
+    protected <T extends AnnotatedElement> Map<T, PropertyInfo> resolveProperties(T[] elements) {
+        return resolveProperties(null, elements);
+    }
+
+    /**
+     * Return {@link PropertyInfo} for each of given elements.
+     */
+    protected <T extends AnnotatedElement> Map<T, PropertyInfo> resolveProperties(String keyPrefix, T[] elements) {
+        Map<T, PropertyInfo> result = new HashMap<>();
+        for (T element : elements) {
+            if (shouldDecorate(element)) {
+                String key = getKey(keyPrefix, element);
+                String defaultValue = getPropertyDefaultValue(element);
+                String stringValue = compiled.getProperty(key, defaultValue);
+
                 if (stringValue == null) {
                     continue;
                 }
-                Object value = convertValueForField(field, stringValue);
-                setValueToField(field, bean, value);
+
+                Object value = convertValue(element, stringValue);
+                result.put(element, new PropertyInfo(key, stringValue, value));
             }
         }
+        return result;
     }
 
     /**
-     * Get key for given field using {@link #fieldDecorator}.
+     * Recursive resolve all internal configs.
      */
-    protected String getFieldKey(Field field) {
-        String key = fieldDecorator.getFieldKey(field);
+    private Map<Method, PropertyInfo> resolveConfigs(Method[] methods, Set<Class> resolvedConfigs) {
+        Map<Method, PropertyInfo> result = new HashMap<>();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Config.class)) {
+                String prefix = method.getAnnotation(Config.class).value();
 
-        if (key == null) {
-            throw new PropertyLoaderException(String.format(
-                    "Field decorator <%s> returned null key for field <%s> ", fieldDecorator, field.getName()
-            ));
+                Class<?> returnType = method.getReturnType();
+                if (resolvedConfigs.contains(returnType)) {
+                    throw new PropertyLoaderException(String.format("Recursive configuration <%s> at <%s>",
+                            returnType, method));
+                }
+                resolvedConfigs.add(returnType);
+
+                Object proxy = populate(prefix, returnType, resolvedConfigs);
+                result.put(method, new PropertyInfo(proxy));
+            }
         }
-        return key;
+        return result;
     }
 
     /**
-     * Get string representation of field value from cache. If no value for given key
-     * then find it in {@link #compiled} properties.
-     *
-     * @see #getFieldKey(Field)
+     * Returns true if given annotatedElement should be decorated,
+     * false otherwise.
      */
-    protected String getFieldValue(String key) {
-        if (!cache.containsKey(key)) {
-            String value = compiled.getProperty(key);
-            cache.put(key, value);
+    protected boolean shouldDecorate(AnnotatedElement element) {
+        return element.isAnnotationPresent(Property.class);
+    }
+
+    /**
+     * Get the default value for given element. Annotation {@link Property} should
+     * be present.
+     */
+    protected String getPropertyDefaultValue(AnnotatedElement element) {
+        if (element.isAnnotationPresent(DefaultValue.class)) {
+            return element.getAnnotation(DefaultValue.class).value();
         }
-
-        return cache.get(key);
+        return null;
     }
 
     /**
-     * Convert given value to specified field type.
-     *
-     * @throws PropertyLoaderException if any problems occurs during type conversion
+     * Get property key for specified element with given prefix. Annotation {@link Property} should
+     * be present.
      */
-    protected Object convertValueForField(Field field, String stringValue) {
+    protected String getKey(String prefix, AnnotatedElement element) {
+        String value = element.getAnnotation(Property.class).value();
+        return prefix == null ? value : String.format("%s.%s", prefix, value);
+    }
+
+    /**
+     * Convert given value to specified type. If given element annotated with {@link Use} annotation
+     * use {@link #getConverterForElementWithUseAnnotation(AnnotatedElement)} converter, otherwise
+     * if element has collection type convert collection and finally try to convert element
+     * using registered converters.
+     */
+    protected Object convertValue(AnnotatedElement element, String value) {
+        Class<?> type = getValueType(element);
+        Type genericType = getValueGenericType(element);
+
         try {
-            return field.isAnnotationPresent(Use.class) ?
-                    getValueForFieldWithUseAnnotation(field, stringValue) :
-                    getValueForField(field, stringValue);
+            if (element.isAnnotationPresent(Use.class)) {
+                Converter converter = getConverterForElementWithUseAnnotation(element);
+                return converter.convert(value);
+            }
+            if (Collection.class.isAssignableFrom(type)) {
+                return manager.convert(type, getCollectionElementType(genericType), value);
+            }
+
+            return manager.convert(type, value);
         } catch (Exception e) {
             throw new PropertyLoaderException(String.format(
-                    "Can't convert value <%s> to type <%s> for field <%s>",
-                    stringValue, field.getType(), field.getName()), e);
+                    "Can't convert value <%s> to type <%s> for <%s>",
+                    value, type, element), e);
         }
     }
 
     /**
-     * Convert given value to field type.
-     *
-     * @param field       given field with {@link Use} annotation.
-     * @param stringValue value to convert.
+     * Returns the type of the value for given element. {@link Field} and {@link Method}
+     * are only supported.
      */
-    protected Object getValueForField(Field field, String stringValue) throws Exception {
-        Class<?> type = field.getType();
-
-        if (Collection.class.isAssignableFrom(type)) {
-            return manager.convert(type, getCollectionElementType(field), stringValue);
+    protected Class<?> getValueType(AnnotatedElement element) {
+        if (element instanceof Field) {
+            return ((Field) element).getType();
         }
-
-        return manager.convert(type, stringValue);
+        if (element instanceof Method) {
+            return ((Method) element).getReturnType();
+        }
+        throw new PropertyLoaderException(String.format("Could not get type for %s", element));
     }
 
     /**
-     * Get collection element type for given field. Given field type should
+     * Returns the generic type of the value for given element. {@link Field} and {@link Method}
+     * are only supported.
+     */
+    protected Type getValueGenericType(AnnotatedElement element) {
+        if (element instanceof Field) {
+            return ((Field) element).getGenericType();
+        }
+        if (element instanceof Method) {
+            return ((Method) element).getGenericReturnType();
+        }
+        throw new PropertyLoaderException(String.format("Could not get generic type for %s", element));
+    }
+
+    /**
+     * Get collection element type for given type. Given type type should
      * be assignable from {@link Collection}. For collections without
      * generic returns {@link String}.
      */
-    protected Class<?> getCollectionElementType(Field field) throws ConversionException {
-        Type genericType = field.getGenericType();
+    protected Class<?> getCollectionElementType(Type genericType) throws ConversionException {
         if (genericType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
             Type[] typeArguments = parameterizedType.getActualTypeArguments();
@@ -187,48 +291,18 @@ public class PropertyLoader {
     }
 
     /**
-     * Convert given value to field type using converter specified in {@link Use} annotation.
-     *
-     * @param field       given field with {@link Use} annotation.
-     * @param stringValue value to convert.
-     */
-    protected Object getValueForFieldWithUseAnnotation(Field field, String stringValue) throws Exception {
-        Converter converter = getConverterForFieldWithUseAnnotation(field);
-        return converter.convert(stringValue);
-    }
-
-    /**
      * Returns new instance of converter specified in {@link Use} annotation for
-     * given field.
+     * given element.
      *
-     * @param field given field with {@link Use} annotation.
+     * @param element given element with {@link Use} annotation.
      */
-    protected Converter getConverterForFieldWithUseAnnotation(Field field) {
-        Class<? extends Converter> clazz = field.getAnnotation(Use.class).value();
+    protected Converter getConverterForElementWithUseAnnotation(AnnotatedElement element) {
+        Class<? extends Converter> clazz = element.getAnnotation(Use.class).value();
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new PropertyLoaderException(String.format(
-                    "Can't instance converter <%s> for field <%s>",
-                    clazz, field.getName()), e);
-        }
-    }
-
-    /**
-     * Set given value to specified field of given object.
-     *
-     * @throws PropertyLoaderException if some exceptions occurs during reflection calls.
-     * @see Field#setAccessible(boolean)
-     * @see Field#set(Object, Object)
-     */
-    protected void setValueToField(Field field, Object bean, Object value) {
-        try {
-            field.setAccessible(true);
-            field.set(bean, value);
-        } catch (Exception e) {
-            throw new PropertyLoaderException(
-                    String.format("Can not set bean <%s> field <%s> value", bean, field), e
-            );
+                    "Can't instance converter <%s> for element <%s>", clazz, element), e);
         }
     }
 
@@ -283,27 +357,6 @@ public class PropertyLoader {
      */
     public PropertyLoader withDefaults(Properties defaults) {
         setDefaults(defaults);
-        return this;
-    }
-
-    public FieldDecorator getFieldDecorator() {
-        return fieldDecorator;
-    }
-
-    /**
-     * @see #fieldDecorator
-     */
-    public void setFieldDecorator(FieldDecorator fieldDecorator) {
-        this.fieldDecorator = fieldDecorator;
-    }
-
-    /**
-     * Fluent-api builder.
-     *
-     * @see #setFieldDecorator(FieldDecorator)
-     */
-    public PropertyLoader withFieldDecorator(FieldDecorator fieldDecorator) {
-        setFieldDecorator(fieldDecorator);
         return this;
     }
 
