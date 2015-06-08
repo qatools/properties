@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Config {
 
-    String value();
+    String prefix();
 
 }

@@ -4,7 +4,7 @@ import static ru.qatools.properties.utils.PropertiesUtils.readProperties;
 
 import java.util.Properties;
 
-import ru.qatools.properties.annotations.Property;
+import ru.qatools.properties.Property;
 import ru.qatools.properties.PropertyLoader;
 
 /**

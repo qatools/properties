@@ -1,6 +1,6 @@
 package ru.qatools.properties.testdata;
 
-import ru.qatools.properties.annotations.Property;
+import ru.qatools.properties.Property;
 
 /**
  * @author Artem Eroshenko eroshenkoam

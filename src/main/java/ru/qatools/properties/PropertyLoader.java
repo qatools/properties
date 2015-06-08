@@ -168,7 +168,7 @@ public class PropertyLoader {
         Map<Method, PropertyInfo> result = new HashMap<>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(Config.class)) {
-                String prefix = method.getAnnotation(Config.class).value();
+                String prefix = method.getAnnotation(Config.class).prefix();
 
                 Class<?> returnType = method.getReturnType();
                 if (resolvedConfigs.contains(returnType)) {

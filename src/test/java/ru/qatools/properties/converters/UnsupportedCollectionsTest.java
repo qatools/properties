@@ -3,7 +3,6 @@ package ru.qatools.properties.converters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import ru.qatools.properties.exeptions.ConversionException;
 
 import java.net.MalformedURLException;
 import java.util.Arrays;

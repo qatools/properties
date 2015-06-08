@@ -1,6 +1,7 @@
-package ru.qatools.properties;
+package ru.qatools.properties.providers;
 
 import org.junit.Test;
+import ru.qatools.properties.PropertyLoader;
 import ru.qatools.properties.testdata.PropertiesWithAbsenceFile;
 
 import static org.hamcrest.CoreMatchers.equalTo;

@@ -1,8 +1,8 @@
 package ru.qatools.properties.testdata;
 
 import ru.qatools.properties.PropertyLoader;
-import ru.qatools.properties.annotations.Property;
-import ru.qatools.properties.annotations.Resource;
+import ru.qatools.properties.Property;
+import ru.qatools.properties.Resource;
 import ru.qatools.properties.providers.SysPropPathReplacerProvider;
 
 /**

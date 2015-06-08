@@ -1,6 +1,6 @@
 package ru.qatools.properties.testdata;
 
-import ru.qatools.properties.annotations.Resource;
+import ru.qatools.properties.Resource;
 
 /**
  * @author Artem Eroshenko eroshenkoam
@@ -10,8 +10,7 @@ import ru.qatools.properties.annotations.Resource;
 @Resource.Classpath("absence.resource")
 public class PropertiesWithAbsenceFile {
 
-    private String property;
-
+    private String property = "default value";
 
     public String getProperty() {
         return property;

@@ -1,4 +1,4 @@
-package ru.qatools.properties;
+package ru.qatools.properties.providers;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
