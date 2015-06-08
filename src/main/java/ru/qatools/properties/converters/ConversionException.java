@@ -1,4 +1,4 @@
-package ru.qatools.properties.exeptions;
+package ru.qatools.properties.converters;
 
 /**
  * @author Dmitry Baev charlie@yandex-team.ru
