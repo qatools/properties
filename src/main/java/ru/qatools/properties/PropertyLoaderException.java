@@ -1,4 +1,4 @@
-package ru.qatools.properties.exeptions;
+package ru.qatools.properties;
 
 /**
  * @author Artem Eroshenko eroshenkoam

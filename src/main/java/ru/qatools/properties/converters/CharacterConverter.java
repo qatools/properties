@@ -1,7 +1,5 @@
 package ru.qatools.properties.converters;
 
-import ru.qatools.properties.exeptions.ConversionException;
-
 /**
  * @author Dmitry Baev charlie@yandex-team.ru
  *         Date: 08.05.15

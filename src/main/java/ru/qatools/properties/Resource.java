@@ -1,4 +1,4 @@
-package ru.qatools.properties.annotations;
+package ru.qatools.properties;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -11,13 +11,13 @@ public interface Resource {
 
     @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
     @Target({java.lang.annotation.ElementType.TYPE})
-    public @interface File {
+    @interface File {
         String[] value();
     }
 
     @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
     @Target({java.lang.annotation.ElementType.TYPE})
-    public @interface Classpath {
+    @interface Classpath {
         String[] value();
     }
 }

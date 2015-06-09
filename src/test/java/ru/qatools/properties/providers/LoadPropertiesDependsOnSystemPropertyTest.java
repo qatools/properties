@@ -1,4 +1,4 @@
-package ru.qatools.properties;
+package ru.qatools.properties.providers;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

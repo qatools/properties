@@ -1,4 +1,4 @@
-package ru.qatools.properties;
+package ru.qatools.properties.providers;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +49,7 @@ public class OverrideDefaultsFromFewPropertiesTest {
     }
 
     @Test
-    public void proxyMustBeInitedFromResource() {
+    public void shouldInitProxyFromResource() {
         assertThat(proxy.getHost(), equalTo(
                 resources.getProperty(ProxyPropertiesFactory.PROXY_HOST_PROPERTY_KEY)
         ));

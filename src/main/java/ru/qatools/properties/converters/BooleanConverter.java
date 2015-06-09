@@ -8,6 +8,13 @@ public class BooleanConverter implements Converter<Boolean> {
 
     @Override
     public Boolean convert(String from) throws Exception {
-        return Boolean.parseBoolean(from.trim());
+        if ("true".equalsIgnoreCase(from.trim())) {
+            return true;
+        }
+        if ("false".equalsIgnoreCase(from.trim())) {
+            return false;
+        }
+        throw new ConversionException(String.format(
+                "Could not convert value <%s> to boolean", from));
     }
 }

@@ -1,9 +1,7 @@
 package ru.qatools.properties.testdata;
 
-import ru.qatools.properties.annotations.Property;
-import ru.qatools.properties.annotations.Use;
-
-import java.util.List;
+import ru.qatools.properties.Property;
+import ru.qatools.properties.Use;
 
 /**
  * @author Artem Eroshenko eroshenkoam

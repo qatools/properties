@@ -13,7 +13,6 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static ru.qatools.properties.testdata.PropEnum.valueOf;
 
 /**

@@ -1,7 +1,5 @@
 package ru.qatools.properties.converters;
 
-import ru.qatools.properties.exeptions.ConversionException;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.net.URI;
@@ -72,23 +70,9 @@ public class ConverterManager {
 
     /**
      * Register converter.
-     *
-     * @see #addArrayConverter(Class, Converter)
      */
     public <T> void register(Class<T> type, Converter<T> converter) {
         addConverter(type, converter);
-        addArrayConverter(type, converter);
-    }
-
-    /**
-     * Register array converter for given type.
-     *
-     * @see #register(Class, Converter)
-     */
-    @SuppressWarnings("unchecked")
-    protected <T> void addArrayConverter(Class<T> type, Converter<T> childConverter) {
-        Class arrayType = Array.newInstance(type, 0).getClass();
-        addConverter(arrayType, new ArrayConverter<>(childConverter, type, stringSplitter));
     }
 
     /**
@@ -102,6 +86,16 @@ public class ConverterManager {
      * Find converter for given type. Returns null if converter doesn't exists.
      */
     protected <T> Converter<T> find(Class<T> type) throws ConversionException {
+        if (type.isEnum()) {
+            //noinspection unchecked
+            return new EnumConverter((Class<? extends Enum>) type);
+        }
+        if (type.isArray()) {
+            Class<?> componentType = type.getComponentType();
+            Converter childConverter = find(componentType);
+            //noinspection unchecked
+            return new ArrayConverter(childConverter, componentType, stringSplitter);
+        }
         //noinspection unchecked
         Converter<T> converter = (Converter<T>) storage.get(type);
         if (converter == null) {
@@ -117,22 +111,31 @@ public class ConverterManager {
      * @see #find(Class)
      */
     public Object convert(Class<?> type, String origin) throws ConversionException {
-        if (type.isEnum()) {
-            return Enum.valueOf((Class) type, origin.toUpperCase().trim());
-        }
-
-        if (Collection.class.isAssignableFrom(type)) {
-            throw new ConversionException("Collections doesn't supported yet");
+        if (origin == null) {
+            return convertNullValue(type);
         }
 
         Converter converter = find(type);
-
         try {
             return converter.convert(origin);
         } catch (Exception e) {
             throw new ConversionException(String.format("Could not convert string <%s> to type <%s>", origin, type), e);
         }
     }
+
+    /**
+     * Convert null to given type.
+     *
+     * @throws ConversionException if any occurs.
+     */
+    protected Object convertNullValue(Class type) throws ConversionException {
+        try {
+            return type.isPrimitive() ? Array.get(Array.newInstance(type, 1), 0) : null;
+        } catch (Exception e) {
+            throw new ConversionException(String.format("Could not convert null to primitive type <%s>", type), e);
+        }
+    }
+
 
     /**
      * Convert given string to specified collection with given element type.
@@ -156,7 +159,6 @@ public class ConverterManager {
     /**
      * Create an instance of specified collection with given element type.
      */
-
     @SuppressWarnings("unchecked")
     protected <T> Collection<T> castCollectionToType(Class collectionType, Collection<T> converted) throws ConversionException {
         if (!Collection.class.isAssignableFrom(collectionType)) {

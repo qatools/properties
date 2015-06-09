@@ -1,7 +1,8 @@
-package ru.qatools.properties;
+package ru.qatools.properties.converters;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.qatools.properties.PropertyLoader;
 import ru.qatools.properties.testdata.LowerCaseStringConverter;
 import ru.qatools.properties.testdata.PropertiesWithCustomConverter;
 
