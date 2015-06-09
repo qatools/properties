@@ -151,6 +151,7 @@ public class PropertyLoader {
                 String stringValue = compiled.getProperty(key, defaultValue);
 
                 if (stringValue == null) {
+                    checkRequired(key, element);
                     continue;
                 }
 
@@ -190,6 +191,25 @@ public class PropertyLoader {
      */
     protected boolean shouldDecorate(AnnotatedElement element) {
         return element.isAnnotationPresent(Property.class);
+    }
+
+    /**
+     * Throws an exception if given element is required.
+     *
+     * @see #isRequired(AnnotatedElement)
+     */
+    protected void checkRequired(String key, AnnotatedElement element) {
+        if (isRequired(element)) {
+            throw new PropertyLoaderException(String.format("Required property " +
+                    "<%s> for element <%s> doesn't exists", key, element));
+        }
+    }
+
+    /**
+     * Returns true if annotatedElement marked as required with {@link Required}.
+     */
+    protected boolean isRequired(AnnotatedElement element) {
+        return element.isAnnotationPresent(Required.class);
     }
 
     /**
