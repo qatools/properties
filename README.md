@@ -1,7 +1,7 @@
 # QATools Properties
 
 [![release](http://github-release-version.herokuapp.com/github/qatools/properties/release.svg?style=flat)](https://github.com/yandex-qatools/properties/releases/latest)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.qatools.commons/properties/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/ru.qatools.commons/properties)  
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.qatools.commons/properties/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/ru.qatools.commons/properties) [![build](https://img.shields.io/jenkins/s/http/ci.qatools.ru/properties_master-deploy.svg?style=flat)](http://ci.qatools.ru/job/properties_master-deploy/lastBuild/) [![covarage](https://img.shields.io/sonar/http/sonar.qatools.ru/ru.qatools.commons:properties/coverage.svg?style=flat)](http://sonar.qatools.ru/dashboard/index/ru.qatools.commons:properties)
 
 This library provides convenient way to work with properties. It can handle property-files
 on hard drive, in classpath or get values from system properties.
