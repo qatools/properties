@@ -24,6 +24,17 @@ public class InterfaceConfigResolveTest {
         assertThat(config.getConfig().getPort(), is(9000));
     }
 
+    @Test
+    public void shouldSumPrefixesInSubConfigs() throws Exception {
+        MyFirstConfig config = PropertyLoader.newInstance().populate(MyFirstConfig.class);
+        MySecondConfig second = config.getConfig();
+
+        assertThat(second.getProp(), is("my"));
+
+        MyThirdConfig third = second.getConfig();
+        assertThat(third.getProp(), is("my-sub"));
+    }
+
     @Test(expected = PropertyLoaderException.class)
     public void shouldResolveRecursiveConfig() throws Exception {
         PropertyLoader.newInstance().populate(MyRecursiveConfig.class);
@@ -51,5 +62,28 @@ public class InterfaceConfigResolveTest {
 
         @Config(prefix = "recursive")
         MyRecursiveConfig getConfig();
+    }
+
+    @Resource.Classpath("sub.config.properties")
+    public interface MyFirstConfig {
+
+        @Config(prefix = "my")
+        MySecondConfig getConfig();
+    }
+
+    public interface MySecondConfig {
+
+        @Property("prop")
+        String getProp();
+
+        @Config(prefix = "sub")
+        MyThirdConfig getConfig();
+    }
+
+    public interface MyThirdConfig {
+
+        @Property("prop")
+        String getProp();
+
     }
 }
