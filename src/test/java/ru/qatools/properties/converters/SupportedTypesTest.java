@@ -5,11 +5,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import ru.qatools.properties.testdata.PropEnum;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -135,7 +139,17 @@ public class SupportedTypesTest {
                 {"mordor, gondor", new PropEnum[]{PropEnum.MORDOR, PropEnum.GONDOR}, PropEnum[].class},
                 {null, null, PropEnum.class},
 
-                {null, null, MyType.class}
+                {null, null, MyType.class},
+
+                {"", new File(""), File.class},
+                {"my/file", new File("my/file"), File.class},
+                {"first/file,second/file", new File[]{new File("first/file"), new File("second/file")}, File[].class},
+                {null, null, File.class},
+
+                {"", Paths.get(""), Path.class},
+                {"my/path", Paths.get("my/path"), Path.class},
+                {"first/path,second/path", new Path[]{Paths.get("first/path"), Paths.get("second/path")}, Path[].class},
+                {null, null, Path.class}
         });
     }
 

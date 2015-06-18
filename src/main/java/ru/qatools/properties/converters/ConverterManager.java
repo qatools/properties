@@ -1,10 +1,12 @@
 package ru.qatools.properties.converters;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,6 +59,8 @@ public class ConverterManager {
         register(URL.class, new UrlConverter());
         register(URI.class, new UriConverter());
         register(Charset.class, new CharsetConverter());
+        register(File.class, new FileConverter());
+        register(Path.class, new PathConverter());
 
         register(Long.TYPE, new LongConverter());
         register(Integer.TYPE, new IntegerConverter());
