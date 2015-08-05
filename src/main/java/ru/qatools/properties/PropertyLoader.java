@@ -15,6 +15,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class PropertyLoader {
         Class<?> clazz = bean.getClass();
 
         while (clazz != Object.class) {
-            Map<Field, PropertyInfo> propertyInfoMap = resolveProperties(clazz.getDeclaredFields());
+            Map<Field, PropertyInfo> propertyInfoMap = resolve(clazz.getDeclaredFields());
 
             for (Field field : propertyInfoMap.keySet()) {
                 PropertyInfo info = propertyInfoMap.get(field);
@@ -87,11 +88,7 @@ public class PropertyLoader {
      */
     public <T> T populate(String prefix, Class<T> clazz, Set<Class> resolvedConfigs) {
         checkConfigurationClass(clazz);
-
-        Map<Method, PropertyInfo> properties = new HashMap<>();
-        properties.putAll(resolveProperties(prefix, clazz.getMethods()));
-        properties.putAll(resolveConfigs(clazz.getMethods(), resolvedConfigs));
-
+        Map<Method, PropertyInfo> properties = resolve(prefix, clazz.getMethods(), resolvedConfigs);
         //noinspection unchecked
         return (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{clazz},
                 new PropertiesProxy(properties));
@@ -133,55 +130,68 @@ public class PropertyLoader {
     }
 
     /**
-     * Shortcut for {@link #resolveProperties(String, AnnotatedElement[])}.
+     * Shortcut for {@link #resolve(String, AnnotatedElement[], Set)}.
      */
-    protected <T extends AnnotatedElement> Map<T, PropertyInfo> resolveProperties(T[] elements) {
-        return resolveProperties(null, elements);
+    protected <T extends AnnotatedElement> Map<T, PropertyInfo> resolve(T[] elements) {
+        return resolve(null, elements, Collections.<Class>emptySet());
     }
 
     /**
      * Return {@link PropertyInfo} for each of given elements.
      */
-    protected <T extends AnnotatedElement> Map<T, PropertyInfo> resolveProperties(String keyPrefix, T[] elements) {
+    protected <T extends AnnotatedElement> Map<T, PropertyInfo> resolve(String keyPrefix, T[] elements, Set<Class> resolvedConfigs) {
         Map<T, PropertyInfo> result = new HashMap<>();
         for (T element : elements) {
-            if (shouldDecorate(element)) {
-                String key = getKey(keyPrefix, element);
-                String defaultValue = getPropertyDefaultValue(element);
-                String stringValue = compiled.getProperty(key, defaultValue);
-
-                if (stringValue == null) {
-                    checkRequired(key, element);
-                    continue;
-                }
-
-                Object value = convertValue(element, stringValue);
-                result.put(element, new PropertyInfo(key, stringValue, value));
+            try {
+                result.putAll(resolveProperty(keyPrefix, element));
+                result.putAll(resolveConfig(keyPrefix, element, resolvedConfigs));
+            } catch (PropertyLoaderException e) {
+                throw new PropertyLoaderException(String.format("Error while process %s", element), e);
             }
         }
         return result;
     }
 
     /**
-     * Recursive resolve all internal configs.
+     * Resolve the property for given element.
      */
-    private Map<Method, PropertyInfo> resolveConfigs(Method[] methods, Set<Class> resolvedConfigs) {
-        Map<Method, PropertyInfo> result = new HashMap<>();
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Config.class)) {
-                String prefix = method.getAnnotation(Config.class).prefix();
-
-                Class<?> returnType = method.getReturnType();
-                if (resolvedConfigs.contains(returnType)) {
-                    throw new PropertyLoaderException(String.format("Recursive configuration <%s> at <%s>",
-                            returnType, method));
-                }
-                resolvedConfigs.add(returnType);
-
-                Object proxy = populate(prefix, returnType, resolvedConfigs);
-                result.put(method, new PropertyInfo(proxy));
-            }
+    private <T extends AnnotatedElement> Map<T, PropertyInfo> resolveProperty(String keyPrefix, T element) {
+        Map<T, PropertyInfo> result = new HashMap<>();
+        if (!shouldDecorate(element)) {
+            return result;
         }
+
+        String key = getKey(keyPrefix, element);
+        String defaultValue = getPropertyDefaultValue(element);
+        String stringValue = compiled.getProperty(key, defaultValue);
+
+        if (stringValue == null) {
+            checkRequired(key, element);
+            return result;
+        }
+
+        Object value = convertValue(element, stringValue);
+        result.put(element, new PropertyInfo(key, stringValue, value));
+        return result;
+    }
+
+    /**
+     * Resolve the config for given element.
+     */
+    private <T extends AnnotatedElement> Map<T, PropertyInfo> resolveConfig(String keyPrefix, T element,
+                                                                            Set<Class> resolvedConfigs) {
+        Map<T, PropertyInfo> result = new HashMap<>();
+        if (!element.isAnnotationPresent(Config.class)) {
+            return result;
+        }
+        String prefix = concat(keyPrefix, element.getAnnotation(Config.class).prefix());
+
+        Class<?> returnType = getValueType(element);
+        checkRecursiveConfigs(resolvedConfigs, returnType);
+        resolvedConfigs.add(returnType);
+
+        Object proxy = populate(prefix, returnType, resolvedConfigs);
+        result.put(element, new PropertyInfo(proxy));
         return result;
     }
 
@@ -194,14 +204,22 @@ public class PropertyLoader {
     }
 
     /**
+     * Throws an exception if already meet the config.
+     */
+    private void checkRecursiveConfigs(Set<Class> resolvedConfigs, Class<?> configClass) {
+        if (resolvedConfigs.contains(configClass)) {
+            throw new PropertyLoaderException(String.format("Recursive configuration <%s>", configClass));
+        }
+    }
+
+    /**
      * Throws an exception if given element is required.
      *
      * @see #isRequired(AnnotatedElement)
      */
     protected void checkRequired(String key, AnnotatedElement element) {
         if (isRequired(element)) {
-            throw new PropertyLoaderException(String.format("Required property " +
-                    "<%s> for element <%s> doesn't exists", key, element));
+            throw new PropertyLoaderException(String.format("Required property <%s> doesn't exists", key));
         }
     }
 
@@ -229,7 +247,14 @@ public class PropertyLoader {
      */
     protected String getKey(String prefix, AnnotatedElement element) {
         String value = element.getAnnotation(Property.class).value();
-        return prefix == null ? value : String.format("%s.%s", prefix, value);
+        return concat(prefix, value);
+    }
+
+    /**
+     * Concat the given prefixes into one.
+     */
+    protected String concat(String first, String second) {
+        return first == null ? second : String.format("%s.%s", first, second);
     }
 
     /**
@@ -254,8 +279,7 @@ public class PropertyLoader {
             return manager.convert(type, value);
         } catch (Exception e) {
             throw new PropertyLoaderException(String.format(
-                    "Can't convert value <%s> to type <%s> for <%s>",
-                    value, type, element), e);
+                    "Can't convert value <%s> to type <%s>", value, type), e);
         }
     }
 
@@ -270,7 +294,7 @@ public class PropertyLoader {
         if (element instanceof Method) {
             return ((Method) element).getReturnType();
         }
-        throw new PropertyLoaderException(String.format("Could not get type for %s", element));
+        throw new PropertyLoaderException("Could not get element type");
     }
 
     /**
@@ -284,7 +308,7 @@ public class PropertyLoader {
         if (element instanceof Method) {
             return ((Method) element).getGenericReturnType();
         }
-        throw new PropertyLoaderException(String.format("Could not get generic type for %s", element));
+        throw new PropertyLoaderException("Could not get generic type for element");
     }
 
     /**
@@ -322,7 +346,7 @@ public class PropertyLoader {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new PropertyLoaderException(String.format(
-                    "Can't instance converter <%s> for element <%s>", clazz, element), e);
+                    "Can't instance converter <%s>", clazz), e);
         }
     }
 
