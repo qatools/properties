@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,6 +62,7 @@ public class ConverterManager {
         register(Charset.class, new CharsetConverter());
         register(File.class, new FileConverter());
         register(Path.class, new PathConverter());
+        register(Locale.class, new LocaleConverter());
 
         register(Long.TYPE, new LongConverter());
         register(Integer.TYPE, new IntegerConverter());
