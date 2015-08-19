@@ -11,11 +11,11 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -149,7 +149,12 @@ public class SupportedTypesTest {
                 {"", Paths.get(""), Path.class},
                 {"my/path", Paths.get("my/path"), Path.class},
                 {"first/path,second/path", new Path[]{Paths.get("first/path"), Paths.get("second/path")}, Path[].class},
-                {null, null, Path.class}
+                {null, null, Path.class},
+
+                {"", Locale.forLanguageTag(""), Locale.class},
+                {"ru", Locale.forLanguageTag("ru"), Locale.class},
+                {"ru,en", new Locale[]{Locale.forLanguageTag("ru"), Locale.forLanguageTag("en")}, Locale[].class},
+                {null, null, Locale.class}
         });
     }
 
