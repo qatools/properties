@@ -3,6 +3,7 @@ package ru.qatools.properties.providers;
 import ru.qatools.properties.Resource;
 import ru.qatools.properties.utils.PropertiesUtils;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -20,8 +21,10 @@ public class DefaultPropertyProvider extends SystemPropertyProvider {
             properties.putAll(PropertiesUtils.readProperties(classLoader.getResourceAsStream(path)));
         }
 
+        Properties systemProperties = System.getProperties();
         for (String path : filepath(beanClass)) {
-            properties.putAll(PropertiesUtils.readProperties(new java.io.File(path)));
+            path = PropertiesUtils.injectProperties(path, systemProperties);
+            properties.putAll(PropertiesUtils.readProperties(new File(path)));
         }
 
         properties.putAll(super.provide(classLoader, beanClass));
