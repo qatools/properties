@@ -75,5 +75,3 @@ It's easy to override value from system properties. E.g. when you run your code 
 `-Dproxy.host=ya.ru`
 
 it overrides the default value in properties file.
-
-The complete start guide can be found on [wiki](http://wiki.qatools.ru/display/COMMONS/Properties).
