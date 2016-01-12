@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * @author Dmitry Baev charlie@yandex-team.ru
@@ -84,7 +85,10 @@ public class InvalidValuesTest {
                 {"string", PropEnum.class},
                 {"string", PropEnum[].class},
 
-                {"string", MyType.class}
+                {"string", MyType.class},
+
+                {"*", Pattern.class},
+                {"*", Pattern[].class}
         });
     }
 

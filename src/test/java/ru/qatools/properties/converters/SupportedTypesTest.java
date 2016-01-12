@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -154,7 +155,9 @@ public class SupportedTypesTest {
                 {"", Locale.forLanguageTag(""), Locale.class},
                 {"ru", Locale.forLanguageTag("ru"), Locale.class},
                 {"ru,en", new Locale[]{Locale.forLanguageTag("ru"), Locale.forLanguageTag("en")}, Locale[].class},
-                {null, null, Locale.class}
+                {null, null, Locale.class},
+
+                {null, null, Pattern.class}
         });
     }
 

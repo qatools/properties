@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class can help you convert some values from string representation.
@@ -63,6 +64,7 @@ public class ConverterManager {
         register(File.class, new FileConverter());
         register(Path.class, new PathConverter());
         register(Locale.class, new LocaleConverter());
+        register(Pattern.class, new PatternConverter());
 
         register(Long.TYPE, new LongConverter());
         register(Integer.TYPE, new IntegerConverter());
