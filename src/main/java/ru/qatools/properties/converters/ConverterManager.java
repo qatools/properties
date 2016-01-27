@@ -94,19 +94,19 @@ public class ConverterManager {
      * Find converter for given type. Returns null if converter doesn't exists.
      */
     protected <T> Converter<T> find(Class<T> type) throws ConversionException {
-        if (type.isEnum()) {
-            //noinspection unchecked
-            return new EnumConverter((Class<? extends Enum>) type);
-        }
-        if (type.isArray()) {
-            Class<?> componentType = type.getComponentType();
-            Converter childConverter = find(componentType);
-            //noinspection unchecked
-            return new ArrayConverter(childConverter, componentType, stringSplitter);
-        }
         //noinspection unchecked
         Converter<T> converter = (Converter<T>) storage.get(type);
         if (converter == null) {
+            if (type.isEnum()) {
+                //noinspection unchecked
+                return new EnumConverter((Class<? extends Enum>) type);
+            }
+            if (type.isArray()) {
+                Class<?> componentType = type.getComponentType();
+                Converter childConverter = find(componentType);
+                //noinspection unchecked
+                return new ArrayConverter(childConverter, componentType, stringSplitter);
+            }
             throw new ConversionException(String.format("Could not find converter for type <%s>", type));
         }
         return converter;
