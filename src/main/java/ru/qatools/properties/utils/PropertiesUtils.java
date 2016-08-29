@@ -20,11 +20,21 @@ public final class PropertiesUtils {
         }
     }
 
+    /**
+     * This is terminal method for {@code inputStream}.<br>
+     * After properties loading it closes {@code inputStream}
+     * with {@link InputStream#close()} method.
+     *
+     * @param inputStream stream, containing pairs of key=value properties
+     * @return properties set inside {@code Properties}
+     * @see Properties#load(InputStream)
+     * @see InputStream#close()
+     */
     public static Properties readProperties(InputStream inputStream) {
         Properties result = new Properties();
         if (inputStream != null) {
-            try {
-                result.load(inputStream);
+            try (InputStream is = inputStream) {
+                result.load(is);
             } catch (IOException ignored) {
             }
         }
