@@ -6,6 +6,13 @@
 This library provides convenient way to work with properties. It can handle property-files
 on hard drive, in classpath or get values from system properties.
 
+## Deprecation notice
+
+This library is not actively maintained, so please look at the same libs
+
+- https://github.com/cfg4j/cfg4j
+- https://github.com/lviggiano/owner
+
 ## Getting started
 
 To add Properties to your Java project, put the following in the
