@@ -90,7 +90,7 @@ public class PropertyLoader {
         checkConfigurationClass(clazz);
         Map<Method, PropertyInfo> properties = resolve(prefix, clazz.getMethods(), resolvedConfigs);
         //noinspection unchecked
-        return (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{clazz},
+        return (T) Proxy.newProxyInstance(classLoader, new Class[]{clazz},
                 new PropertiesProxy(properties));
     }
 
